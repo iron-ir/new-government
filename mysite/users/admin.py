@@ -25,35 +25,38 @@ class WorkExperitionAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('is_staff', 'username', 'nationalcode', 'phonenumber', 'is_candidate',)
+    list_display = ('username','is_staff', 'nationalcode', 'phonenumber', 'is_candidate',)
     list_filter = ('is_staff', 'is_active', 'is_candidate')
     search_fields = ['username', 'nationalcode', 'phonenumber', ]
     fieldsets = [(
         'اطلاعات ورود به سامانه', {
             'fields': [
                 'username',
-                'password'
+                'password',
+                'is_candidate',
             ]
         }
     ), (
         'اطلاعات فردی', {
             'fields': [
+                'avatar',
                 'first_name',
                 'last_name',
                 'email',
                 'phonenumber',
                 'nationalcode',
                 'birthday',
+                '_gender',
             ]
         }
     ), (
-        'اطلاعات تکمیلی', {
+        'اطلاعات تکمیلی مربوط به سامانه', {
             'fields': [
                 'is_staff',
                 'is_active',
-                'is_candidate',
                 'date_joined',
                 'last_login',
+                'groups',
             ]
         }
     ),

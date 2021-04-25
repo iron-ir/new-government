@@ -10,7 +10,7 @@ def _get_upload_to(instance, file_name):
     _uuid = uuid4()
     _uuid2 = uuid4()
     ext = file_name.split('.')[-1]
-    return "child/{}/{}.{}".format(str(_uuid), str(_uuid2), ext)
+    return "users/{}/{}.{}".format(str(_uuid), str(_uuid2), ext)
 
 
 @deconstructible
@@ -43,7 +43,7 @@ class User(AbstractUser):
     )
     is_candidate = models.BooleanField(
         default=False,
-        verbose_name='کاندید',
+        verbose_name='نامزد انتخاباتی',
     )
     _nationalcode_validator = _UnicodeNationalcodeValidator()
     nationalcode = models.CharField(
