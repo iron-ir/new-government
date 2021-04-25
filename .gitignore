@@ -164,4 +164,6 @@ Thumbs.db
 # End of https://www.toptal.com/developers/gitignore/api/django
 
 ./.idea
+/.idea
 .idea
+./mysite/uploads
