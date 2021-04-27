@@ -1,4 +1,4 @@
-from mysite.mysite.settings import LAST_ELECTION_PERIOD
+LAST_ELECTION_PERIOD = '1400:03:28'
 
 
 def permitted_age(age):

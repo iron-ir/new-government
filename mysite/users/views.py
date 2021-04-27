@@ -7,13 +7,13 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST, require_GET
 
-from mysite.repository.regular_expression import (
+from .repository.regular_expression import (
     username_reg,
     password_reg,
     nationalcode_reg
 )
-from mysite.repository.validators import permitted_age
-from mysite.users.models import User as MyUser
+from .repository.validators import permitted_age
+from .models import User as MyUser
 
 
 @login_required

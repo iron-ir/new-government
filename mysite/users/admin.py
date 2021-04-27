@@ -6,7 +6,7 @@ from .models import User, WorkExperition, Role, UserRole
 class UserRoleAdmin(admin.ModelAdmin):
     list_display = ('user', 'role', 'from_date_time', 'to_date_time')
     list_filter = ('user', 'role',)
-    search_fields = ['user', 'role',]
+    search_fields = ['user', 'role', ]
 
 
 @admin.register(Role)
@@ -25,15 +25,15 @@ class WorkExperitionAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username','is_staff', 'nationalcode', 'phonenumber', 'is_candidate',)
-    list_filter = ('is_staff', 'is_active', 'is_candidate')
+    list_display = ('username', 'is_staff', 'nationalcode', 'phonenumber', '_is_candidate',)
+    list_filter = ('is_staff', 'is_active', '_is_candidate')
     search_fields = ['username', 'nationalcode', 'phonenumber', ]
     fieldsets = [(
         'اطلاعات ورود به سامانه', {
             'fields': [
                 'username',
                 'password',
-                'is_candidate',
+                '_is_candidate',
             ]
         }
     ), (

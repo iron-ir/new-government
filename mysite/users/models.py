@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from mysite.repository.regular_expression import UnicodeNationalcodeValidator, UnicodePhonenumberValidator
+from .repository.regular_expression import UnicodeNationalcodeValidator, UnicodePhonenumberValidator
 
-from mysite.repository.choices import (
+from .repository.choices import (
     YES_OR_NO_CHOICES,
     GENDER_CHOICES,
     GENDER_DEFAULT,
@@ -12,7 +12,7 @@ from mysite.repository.choices import (
     VCODE_DEFAULT,
 )
 
-from mysite.repository.uploader import image_upload_to
+from .repository.uploader import image_upload_to
 
 
 class User(AbstractUser):
