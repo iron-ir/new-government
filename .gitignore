@@ -1,4 +1,5 @@
 .idea
+/.idea
 
 # Created by https://www.toptal.com/developers/gitignore/api/django
 # Edit at https://www.toptal.com/developers/gitignore?templates=django
@@ -168,5 +169,5 @@ static_4/*
 uploads/*
 .idea/*
 *__pycache__*
-db.sqlite3
 tmp/*
+/.idea/*
