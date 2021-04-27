@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('_verified', models.BooleanField(choices=[(False, 'خیر'), (True, 'بله')], default=False, help_text='مقدار این فیلد زمانی برابر با True می باشد که کاربر احراز هویت شده باشد.', verbose_name='تایید')),
                 ('phonenumber', models.CharField(blank=True, max_length=16, null=True, unique=True, validators=[
-                    repository.regular_expression.UnicodePhonenumberValidator()], verbose_name='شماره تلفن')),
+                    repository.regular_expression.UnicodePhoneNumberValidator()], verbose_name='شماره تلفن')),
                 ('_verified_phonenumber', models.BooleanField(choices=[(False, 'خیر'), (True, 'بله')], default=False, verbose_name='تایید شماره تلفن')),
                 ('_is_candidate', models.BooleanField(choices=[(False, 'خیر'), (True, 'بله')], default=False, verbose_name='نامزد انتخاباتی هستید؟')),
                 ('nationalcode', models.CharField(blank=True, max_length=10, null=True, unique=True, validators=[

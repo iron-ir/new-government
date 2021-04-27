@@ -16,7 +16,7 @@ postalcode_reg = re.compile(_postalcode_regular_expression)
 
 
 @deconstructible
-class UnicodePhonenumberValidator(validators.RegexValidator):
+class UnicodePhoneNumberValidator(validators.RegexValidator):
     regex = _phonenumber_regular_expression
     message = 'Enter a valid phonenumber.'
     flags = 0

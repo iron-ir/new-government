@@ -1,39 +1,38 @@
 from django.contrib import admin
-from .models import User, WorkExperition, Role, UserRole
+from .models import User#, WorkExperition, Role, UserRole
 
 
-@admin.register(UserRole)
-class UserRoleAdmin(admin.ModelAdmin):
-    list_display = ('user', 'role', 'from_date_time', 'to_date_time')
-    list_filter = ('user', 'role',)
-    search_fields = ['user', 'role', ]
-
-
-@admin.register(Role)
-class RoleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'is_active',)
-    list_filter = ('title', 'is_active',)
-    search_fields = ['title', ]
-
-
-@admin.register(WorkExperition)
-class WorkExperitionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'post_title', 'organization_name',)
-    list_filter = ('user', 'post_title', 'organization_name',)
-    search_fields = ['user', 'post_title', 'organization_name', ]
+# @admin.register(UserRole)
+# class UserRoleAdmin(admin.ModelAdmin):
+#     list_display = ('user', 'role', 'from_date_time', 'to_date_time')
+#     list_filter = ('user', 'role',)
+#     search_fields = ['user', 'role', ]
+#
+#
+# @admin.register(Role)
+# class RoleAdmin(admin.ModelAdmin):
+#     list_display = ('title', 'is_active',)
+#     list_filter = ('title', 'is_active',)
+#     search_fields = ['title', ]
+#
+#
+# @admin.register(WorkExperition)
+# class WorkExperitionAdmin(admin.ModelAdmin):
+#     list_display = ('user', 'post_title', 'organization_name',)
+#     list_filter = ('user', 'post_title', 'organization_name',)
+#     search_fields = ['user', 'post_title', 'organization_name', ]
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'is_staff', 'nationalcode', 'phonenumber', '_is_candidate',)
-    list_filter = ('is_staff', 'is_active', '_is_candidate')
-    search_fields = ['username', 'nationalcode', 'phonenumber', ]
+    list_display = ('username', 'is_staff', 'national_code', 'phone_number',)
+    list_filter = ('is_staff', 'is_active',)
+    search_fields = ['username', 'national_code', 'phone_number', ]
     fieldsets = [(
         'اطلاعات ورود به سامانه', {
             'fields': [
                 'username',
                 'password',
-                '_is_candidate',
             ]
         }
     ), (
@@ -43,10 +42,9 @@ class UserAdmin(admin.ModelAdmin):
                 'first_name',
                 'last_name',
                 'email',
-                'phonenumber',
-                'nationalcode',
-                'birthday',
-                '_gender',
+                'phone_number',
+                'national_code',
+                'birth_date',
             ]
         }
     ), (

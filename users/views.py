@@ -34,14 +34,14 @@ def singup_form(request: HttpRequest):
 
 @require_POST
 def singup_done(request: HttpRequest):
-    if 'birthday' not in request.POST:
+    if 'birth_date' not in request.POST:
         messages.add_message(request, messages.INFO, 'فیلد مربوط به تاریخ تولد خالی است.')
         return redirect('users:signup_form')
-    if 'nationalcode' not in request.POST:
+    if 'national_code' not in request.POST:
         messages.add_message(request, messages.INFO, 'فیلد مربوط به شماره ملی خالی است.')
         return redirect('users:signup_form')
     if 'username' not in request.POST:
-        request.POST['username'] = request.POST['nationalcode']
+        request.POST['username'] = request.POST['national_code']
     if 'password' not in request.POST:
         messages.add_message(request, messages.INFO, 'فیلد مربوط به کلمه عبور خالی است.')
         return redirect('users:signup_form')
@@ -55,17 +55,17 @@ def singup_done(request: HttpRequest):
         messages.add_message(request, messages.INFO, 'فیلد مربوط به نام خانوادگی خالی است.')
         return redirect('users:signup_form')
 
-    birthday = request.POST['birthday']
-    if permitted_age(birthday) is False:
+    birth_date = request.POST['birth_date']
+    if permitted_age(birth_date) is False:
         messages.add_message(request, messages.ERROR, 'شما برای شرکت در انتخابات پیشرو به سن مجاز نرسیده اید.')
         return redirect('users:signup_form')
 
-    nationalcode = request.POST['nationalcode']
-    if MyUser.objects.filter(nationalcode=nationalcode).first():
+    national_code = request.POST['national_code']
+    if MyUser.objects.filter(nationalcode=national_code).first():
         messages.add_message(request, messages.ERROR, "کاربر با این شماره ملی قبلا ثبت نام شده است،"
                                                       "درصورت ثبت شکایت با پشتیبانی سایت تماس بگیرید.")
         return redirect('users:signup_form')
-    if nationalcode_reg.match(nationalcode) is None:
+    if nationalcode_reg.match(national_code) is None:
         messages.add_message(request, messages.ERROR, 'فرمت شماره ملی رعایت نشده است.')
         return redirect('users:signup_form')
 
@@ -89,8 +89,8 @@ def singup_done(request: HttpRequest):
     first_name = request.POST['first_name']
     last_name = request.POST['last_name']
     usr = MyUser()
-    usr.birthday = birthday
-    usr.nationalcode = nationalcode
+    usr.birth_date = birth_date
+    usr.national_code = national_code
     usr.username = username
     usr.password = make_password(password)
     usr.first_name = first_name
@@ -121,7 +121,7 @@ def login_done(request: HttpRequest):
     usr = authenticate(username=request.POST['username'],
                        password=request.POST['password'])
     if usr is None:
-        usr = authenticate(nationalcode=request.POST['username'],
+        usr = authenticate(national_code=request.POST['username'],
                            password=request.POST['password'])
     if usr is None:
         messages.add_message(request, messages.ERROR, 'شماره ملی/نام کاربری یا کلمه عبور اشتباه است.')
