@@ -51,11 +51,6 @@ class UserAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-@admin.register(Voter)
-class VoterAdmin(admin.ModelAdmin):
-    pass
-
-
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):
     list_display = ('national_code', 'first_name', 'last_name',)

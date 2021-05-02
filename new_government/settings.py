@@ -150,7 +150,6 @@ ADMIN_ORDERING = [
     ('users',
      [
          'User',
-         'Voter',
          'Candidate',
          'EducationHistory',
          'WorkExpiration',

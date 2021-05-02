@@ -99,48 +99,6 @@ class User(AbstractUser):
         verbose_name_plural = 'کاربران'
 
 
-class Voter(models.Model):
-    user = models.OneToOneField(
-        verbose_name='کاربر',
-        to=User,
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-    )
-    first_name = models.CharField(
-        verbose_name='نام',
-        max_length=32,
-        null=True,
-        blank=True,
-    )
-    last_name = models.CharField(
-        verbose_name='نام خانوادگی',
-        max_length=32,
-        null=True,
-        blank=True,
-    )
-    _national_code_validator = UnicodeNationalcodeValidator()
-    national_code = models.CharField(
-        verbose_name='کد ملی',
-        max_length=16,
-        null=False,
-        blank=False,
-        validators=[_national_code_validator],
-    )
-    birth_date = models.DateField(
-        verbose_name='تاریخ تولد',
-        blank=False,
-        null=False,
-    )
-
-    def __str__(self):
-        return f'{self.national_code}'
-
-    class Meta:
-        verbose_name = 'رای دهنده'
-        verbose_name_plural = 'رای دهندگان'
-
-
 class Candidate(models.Model):
     user = models.OneToOneField(
         verbose_name='کاربر',
