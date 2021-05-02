@@ -182,3 +182,16 @@ def ACTIVITY_TYPE_RETURNER(value):
         return 'رسمی'
 
     return 'نامعلوم'
+
+
+FIELD_OF_STUDY_CHOICES = (
+    ('0', 'خالی'),
+)
+
+FIELD_OF_STUDY_DEFAULT = '0'
+
+
+def FIELD_OF_STUDY_RETURNER(value):
+    if value == '0':
+        return 'خالی'
+    return 'نامعلوم'

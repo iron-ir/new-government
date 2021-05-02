@@ -1,26 +1,15 @@
 from django.contrib import admin
-from .models import User, Candidate, WorkExpiration
+from .models import *
 
 
-# @admin.register(UserRole)
-# class UserRoleAdmin(admin.ModelAdmin):
-#     list_display = ('user', 'role', 'from_date_time', 'to_date_time')
-#     list_filter = ('user', 'role',)
-#     search_fields = ['user', 'role', ]
-#
-#
-# @admin.register(Role)
-# class RoleAdmin(admin.ModelAdmin):
-#     list_display = ('title', 'is_active',)
-#     list_filter = ('title', 'is_active',)
-#     search_fields = ['title', ]
-#
-#
-@admin.register(WorkExpiration)
-class WorkExpirationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'post_title', 'organization_name',)
-    list_filter = ('user', 'post_title', 'organization_name',)
-    search_fields = ['user', 'post_title', 'organization_name', ]
+@admin.register(BaseInformationHeader)
+class BaseInformationHeaderAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(BaseInformation)
+class BaseInformationAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(User)
@@ -62,6 +51,11 @@ class UserAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
+@admin.register(Voter)
+class VoterAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):
     list_display = ('national_code', 'first_name', 'last_name',)
@@ -77,6 +71,53 @@ class CandidateAdmin(admin.ModelAdmin):
         }
     ),
     ]
+
+
+@admin.register(WorkExpiration)
+class WorkExpirationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'post_title', 'organization_name',)
+    list_filter = ('user', 'post_title', 'organization_name',)
+    search_fields = ['user', 'post_title', 'organization_name', ]
+
+
+@admin.register(EducationHistory)
+class EducationHistoryAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Zone)
+class ZoneAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Standpoint)
+class StandpointAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Effect)
+class EffectAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(UserRelation)
+class UserRelationAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(CandidateGroup)
+class CandidateGroupAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Election)
+class ElectionAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(RegisterCandidatePerElection)
+class RegisterCandidatePerElectionAdmin(admin.ModelAdmin):
+    pass
 
 # admin.site.site_header = "ادمین"
 # admin.site.site_title = "پرتال ادمین"

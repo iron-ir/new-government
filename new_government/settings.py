@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-
+from django.contrib import admin
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -145,3 +145,39 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
 LAST_ELECTION_PERIOD = '1400:03:28'
+
+ADMIN_ORDERING = [
+    ('users',
+     [
+         'User',
+         'Voter',
+         'Candidate',
+         'EducationHistory',
+         'WorkExpiration',
+         'Effect',
+         'Standpoint',
+         'UserRelation',
+         'RegisterCandidatePerElection',
+         'Election',
+         'CandidateGroup',
+         'Zone',
+         'BaseInformation',
+         'BaseInformationHeader',
+
+     ],
+     ),
+    ('auth', ['Group', ],),
+
+]
+
+
+# Creating a sort function
+def get_app_list(self, request):
+    app_dict = self._build_app_dict(request)
+    for app_name, object_list in ADMIN_ORDERING:
+        app = app_dict[app_name]
+        app['models'].sort(key=lambda x: object_list.index(x['object_name']))
+        yield app
+
+
+admin.AdminSite.get_app_list = get_app_list
