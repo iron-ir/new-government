@@ -3,69 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from repository.uploader import image_upload_to, file_upload_to
 from repository.regular_expression import UnicodeNationalcodeValidator, UnicodePhoneNumberValidator
 from repository.choices import *
-
-
-class BaseInformationHeader(models.Model):
-    title = models.CharField(
-        verbose_name='عنوان',
-        max_length=64,
-        null=False,
-        blank=False,
-    )
-    code = models.IntegerField(
-        verbose_name='کد',
-        null=True,
-        blank=True,
-        unique=True,
-    )
-    is_active = models.BooleanField(
-        verbose_name='فعال',
-        default=False,
-    )
-
-    def __str__(self):
-        return f'{self.code}: {self.title}' if self.code is not None else f'{self.title}'
-
-    class Meta:
-        verbose_name = 'سرفصل اطلاعات پایه'
-        verbose_name_plural = 'سرفصل های اطلاعات پایه'
-
-
-class BaseInformation(models.Model):
-    header = models.ForeignKey(
-        verbose_name='سرفصل',
-        to='BaseInformationHeader',
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-    )
-    title = models.CharField(
-        verbose_name='عنوان',
-        max_length=64,
-        null=False,
-        blank=False,
-    )
-
-    code = models.IntegerField(
-        verbose_name='کد',
-        null=True,
-        blank=True,
-    )
-
-    parent = models.ForeignKey(
-        verbose_name='والد',
-        to='BaseInformation',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-
-    def __str__(self):
-        return f'{self.code}: {self.title}' if self.code is not None else f'{self.title}'
-
-    class Meta:
-        verbose_name = 'اطلاعات پایه'
-        verbose_name_plural = 'اطلاعات پایه ها'
+from base_information_setting.models import BaseInformation,BaseInformationHeader,Zone
 
 
 class User(AbstractUser):
@@ -157,7 +95,7 @@ class Candidate(models.Model):
     )
     birth_place = models.ForeignKey(
         verbose_name='محل تولد',
-        to='Zone',
+        to=Zone,
         on_delete=models.CASCADE,
         null=False,
         blank=False,
@@ -165,7 +103,7 @@ class Candidate(models.Model):
 
     nationality = models.ForeignKey(
         verbose_name='ملیت',
-        to='BaseInformation',
+        to=BaseInformation,
         on_delete=models.CASCADE,
         null=False,
         blank=False,
@@ -173,7 +111,7 @@ class Candidate(models.Model):
     )
     religion = models.ForeignKey(
         verbose_name='دین',
-        to='BaseInformation',
+        to=BaseInformation,
         on_delete=models.CASCADE,
         null=False,
         blank=False,
@@ -208,7 +146,7 @@ class WorkExpiration(models.Model):
     )
     cooperation_type = models.ForeignKey(
         verbose_name='نوع همکاری',
-        to='BaseInformation',
+        to=BaseInformation,
         on_delete=models.CASCADE,
         blank=True,
         null=True,
@@ -228,7 +166,7 @@ class WorkExpiration(models.Model):
 
     activity_type = models.ForeignKey(
         verbose_name='نوع فعالیت',
-        to='BaseInformation',
+        to=BaseInformation,
         on_delete=models.CASCADE,
         blank=True,
         null=True,
@@ -253,14 +191,14 @@ class WorkExpiration(models.Model):
 class EducationHistory(models.Model):
     user = models.ForeignKey(
         verbose_name='کاربر',
-        to='User',
+        to=User,
         on_delete=models.CASCADE,
         null=False,
         blank=False,
     )
     degree_type = models.ForeignKey(
         verbose_name='مقطع',
-        to='BaseInformation',
+        to=BaseInformation,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -269,7 +207,7 @@ class EducationHistory(models.Model):
 
     field_of_study = models.ForeignKey(
         verbose_name='رشته',
-        to='BaseInformation',
+        to=BaseInformation,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -277,7 +215,7 @@ class EducationHistory(models.Model):
     )
     place_of_study_type = models.ForeignKey(
         verbose_name='نوع موسسه',
-        to='BaseInformation',
+        to=BaseInformation,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -292,7 +230,7 @@ class EducationHistory(models.Model):
 
     zone = models.ForeignKey(
         verbose_name='مکان',
-        to='Zone',
+        to=Zone,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -316,40 +254,10 @@ class EducationHistory(models.Model):
         return f'{self.user}: {self.degree_type} {self.field_of_study}'
 
 
-class Zone(models.Model):
-    title = models.CharField(
-        verbose_name='عنوان منطقه',
-        max_length=32,
-        blank=False,
-        null=False,
-    )
-    ztype = models.ForeignKey(
-        verbose_name='نوع',
-        to='BaseInformation',
-        on_delete=models.CASCADE,
-        blank=False,
-        null=False,
-    )
-    parent = models.ForeignKey(
-        verbose_name='والد',
-        to='Zone',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
-    )
-
-    class Meta:
-        verbose_name = 'تقسیمات جغرافیایی'
-        verbose_name_plural = 'تقسیمات جغرافیایی ها'
-
-    def __str__(self):
-        return f'{self.ztype} {self.title}'
-
-
 class Standpoint(models.Model):
     candidate = models.ForeignKey(
         verbose_name='نامزد',
-        to='Candidate',
+        to=Candidate,
         on_delete=models.CASCADE,
         null=False,
         blank=False,
@@ -394,7 +302,7 @@ class Standpoint(models.Model):
 class Effect(models.Model):
     candidate = models.ForeignKey(
         verbose_name='کاربر',
-        to='Candidate',
+        to=Candidate,
         on_delete=models.CASCADE,
         null=False,
         blank=False,
@@ -437,14 +345,14 @@ class Effect(models.Model):
 
 class UserRelation(models.Model):
     candidate = models.ForeignKey(
-        to='Candidate',
+        to=Candidate,
         on_delete=models.CASCADE,
         verbose_name='نامزد',
         null=False,
         blank=False,
     )
     user = models.ForeignKey(
-        to='User',
+        to=User,
         on_delete=models.CASCADE,
         verbose_name='کاربر',
         null=False,
@@ -452,7 +360,7 @@ class UserRelation(models.Model):
     )
     relation_type = models.ForeignKey(
         verbose_name='نوع رابطه',
-        to='BaseInformation',
+        to=BaseInformation,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -490,99 +398,3 @@ class CandidateGroup(models.Model):
 
     def __str__(self):
         return f'{self.title}'
-
-
-class Election(models.Model):
-    etype = models.ForeignKey(
-        verbose_name='نوع',
-        to='BaseInformation',
-        on_delete=models.CASCADE,
-        blank=False,
-        null=False,
-    )
-
-    form_year = models.IntegerField(
-        verbose_name='از سال',
-        null=False,
-        blank=False,
-    )
-    to_year = models.IntegerField(
-        verbose_name='تا سال',
-        null=False,
-        blank=False,
-    )
-    period = models.IntegerField(
-        verbose_name='دوره',
-        null=False,
-        blank=False,
-    )
-
-    date = models.DateField(
-        verbose_name='تاریخ برگزاری',
-        null=False,
-        blank=False
-    )
-    duration_of_the_event = models.DateField(
-        verbose_name='مدت زمان برگزاری',
-        null=True,
-        blank=True,
-    )
-    round = models.IntegerField(
-        verbose_name='دور',
-        default=1,
-    )
-
-    class Meta:
-        verbose_name = 'انتخابات'
-        verbose_name_plural = 'انتخابات ها'
-
-    def __str__(self):
-        return f'{self.period} {self.etype}'
-
-
-class RegisterCandidatePerElection(models.Model):
-    candidate = models.ForeignKey(
-        verbose_name='نامزد',
-        to='Candidate',
-        null=False,
-        blank=False,
-        on_delete=models.CASCADE,
-    )
-    election = models.ForeignKey(
-        verbose_name='انتخابات',
-        to='Election',
-        null=False,
-        blank=False,
-        on_delete=models.CASCADE,
-    )
-    candidate_group = models.ForeignKey(
-        verbose_name='ائتلاف',
-        to='CandidateGroup',
-        null=True,
-        blank=True,
-        on_delete=models.CASCADE,
-    )
-    date_time = models.DateTimeField(
-        verbose_name='تاریخ ثبت نام',
-        null=False,
-        blank=False,
-    )
-    slogan = models.CharField(
-        verbose_name='شعار',
-        max_length=256,
-        null=True,
-        blank=True,
-    )
-    candidate_title = models.CharField(
-        verbose_name='عنوان نامزد',
-        max_length=128,
-        null=True,
-        blank=True,
-    )
-
-    class Meta:
-        verbose_name = 'نماینده شرکت کننده در انتخابات'
-        verbose_name_plural = 'نمایندگان شرکت کننده در انتخابات ها'
-
-    def __str__(self):
-        return f'{self.candidate}, {self.election}'

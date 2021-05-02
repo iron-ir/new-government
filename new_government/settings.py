@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 from django.contrib import admin
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -45,6 +46,10 @@ INSTALLED_APPS = [
     'django_json_widget',
 
     'users.apps.UsersConfig',
+    'base_information_setting.apps.BaseInformationSettingConfig',
+    'election.apps.ElectionConfig',
+    'polling.apps.PollingConfig',
+
     'users.static',
 ]
 
@@ -147,25 +152,24 @@ AUTH_USER_MODEL = 'users.User'
 LAST_ELECTION_PERIOD = '1400:03:28'
 
 ADMIN_ORDERING = [
-    ('users',
-     [
-         'User',
-         'Candidate',
-         'EducationHistory',
-         'WorkExpiration',
-         'Effect',
-         'Standpoint',
-         'UserRelation',
-         'RegisterCandidatePerElection',
-         'Election',
-         'CandidateGroup',
-         'Zone',
-         'BaseInformation',
-         'BaseInformationHeader',
-
-     ],
-     ),
-    ('auth', ['Group', ],),
+    (
+        'base_information_setting', ['BaseInformationHeader', 'BaseInformation', 'Zone', ],),
+    (
+        'election', ['Election', 'RegisterCandidatePerElection', ],),
+    (
+        'users', [
+        'User',
+        'Candidate',
+        'EducationHistory',
+        'WorkExpiration',
+        'Effect',
+        'Standpoint',
+        'UserRelation',
+        'CandidateGroup',
+    ],), (
+    'auth', [
+        'Group',
+    ],),
 
 ]
 

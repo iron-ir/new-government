@@ -2,16 +2,6 @@ from django.contrib import admin
 from .models import *
 
 
-@admin.register(BaseInformationHeader)
-class BaseInformationHeaderAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(BaseInformation)
-class BaseInformationAdmin(admin.ModelAdmin):
-    pass
-
-
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'is_staff', 'phone_number',)
@@ -80,11 +70,6 @@ class EducationHistoryAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Zone)
-class ZoneAdmin(admin.ModelAdmin):
-    pass
-
-
 @admin.register(Standpoint)
 class StandpointAdmin(admin.ModelAdmin):
     pass
@@ -104,15 +89,6 @@ class UserRelationAdmin(admin.ModelAdmin):
 class CandidateGroupAdmin(admin.ModelAdmin):
     pass
 
-
-@admin.register(Election)
-class ElectionAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(RegisterCandidatePerElection)
-class RegisterCandidatePerElectionAdmin(admin.ModelAdmin):
-    pass
 
 # admin.site.site_header = "ادمین"
 # admin.site.site_title = "پرتال ادمین"
