@@ -35,11 +35,6 @@ class UserAdmin(admin.ModelAdmin):
     ),
     ]
 
-    def save_model(self, request, obj, form, change):
-        from django.contrib.auth.hashers import make_password
-        obj.password = make_password(request.POST['password'])
-        super().save_model(request, obj, form, change)
-
 
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):

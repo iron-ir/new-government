@@ -32,6 +32,11 @@ class User(AbstractUser):
     def __str__(self):
         return f'{self.username}'
 
+    def save(self, *args, **kwargs):
+        from django.contrib.auth.hashers import make_password
+        self.password = make_password(self.password)
+        super(User, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name = 'کاربر'
         verbose_name_plural = 'کاربران'
