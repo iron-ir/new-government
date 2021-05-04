@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'debug_toolbar',
-    'django_json_widget',
+    'rest_framework',
 
     'users.apps.UsersConfig',
     'base_information_setting.apps.BaseInformationSettingConfig',
@@ -120,6 +120,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'fa-ir'
 
+LANGUAGES = [
+    ('en', 'English'),
+    ('fa', 'Persian')
+]
+
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
@@ -135,8 +140,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 LOGIN_URL = '/login'
 
@@ -153,23 +158,33 @@ LAST_ELECTION_PERIOD = '1400:03:28'
 
 ADMIN_ORDERING = [
     (
-        'base_information_setting', ['BaseInformationHeader', 'BaseInformation', 'Zone', ],),
+        'base_information_setting',
+        [
+            'BaseInformationHeader',
+            'BaseInformation',
+            'Zone',
+        ],
+    ),
     (
-        'election', ['Election', 'RegisterCandidatePerElection', ],),
+        'election', [
+            'Election',
+            'RegisterCandidatePerElection',
+        ],
+    ),
     (
         'users', [
-        'User',
-        'Candidate',
-        'EducationHistory',
-        'WorkExpiration',
-        'Effect',
-        'Standpoint',
-        'UserRelation',
-        'CandidateGroup',
-    ],), (
-    'auth', [
-        'Group',
-    ],),
+            'User',
+            'Candidate',
+            'EducationHistory',
+            'WorkExpiration',
+            'Effect',
+            'Standpoint',
+            'UserRelation',
+            'CandidateGroup',
+        ],), (
+        'auth', [
+            'Group',
+        ],),
 
 ]
 

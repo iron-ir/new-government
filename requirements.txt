@@ -1,9 +1,8 @@
+djangorestframework
 asgiref==3.3.4
 Django==3.2
 django-debug-toolbar==3.2.1
 django-filter==2.4.0
-django-json-widget==1.1.1
-djangorestframework==3.12.4
 future==0.18.2
 Markdown==3.3.4
 Pillow==8.2.0
