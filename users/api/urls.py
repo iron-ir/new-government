@@ -6,7 +6,7 @@ from . import routes
 app_name = 'users'
 
 urlpatterns = [
-    # path('signup'),
+    path('signup', routes.signup),
     path('login', routes.login),
     path('logout', routes.logout),
     # path('update', ),
