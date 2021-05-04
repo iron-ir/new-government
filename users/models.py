@@ -38,6 +38,11 @@ class User(AbstractUser):
         blank=True,
         upload_to=image_upload_to,
     )
+
+    is_verify = models.BooleanField(
+        verbose_name='تایید',
+        default=False,
+    )
     first_name = None
     last_name = None
 
