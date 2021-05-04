@@ -84,7 +84,6 @@ class UserRelationAdmin(admin.ModelAdmin):
 class CandidateGroupAdmin(admin.ModelAdmin):
     pass
 
-
 # admin.site.site_header = "ادمین"
 # admin.site.site_title = "پرتال ادمین"
 # admin.site.index_title = "به پرتال ادمین خوش آمدید."
