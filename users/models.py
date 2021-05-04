@@ -1,14 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from repository.uploader import image_upload_to, file_upload_to
-from repository.regular_expression import UnicodeNationalcodeValidator, UnicodePhoneNumberValidator
+from repository.regular_expression import UnicodeNationalcodeValidator, UnicodePhoneNumberValidator, \
+    UnicodePasswordValidator
 from repository.choices import *
-from base_information_setting.models import BaseInformation,BaseInformationHeader,Zone
+from base_information_setting.models import BaseInformation, BaseInformationHeader, Zone
 
 
 class User(AbstractUser):
-    first_name = None
-    last_name = None
     _phone_number_validator = UnicodePhoneNumberValidator()
     phone_number = models.CharField(
         verbose_name='شماره تلفن',
@@ -22,20 +21,39 @@ class User(AbstractUser):
         verbose_name='تایید شماره تلفن',
         default=False,
     )
+    is_email_verify = models.BooleanField(
+        verbose_name='تایید ایمیل',
+        default=False,
+    )
     avatar = models.ImageField(
         verbose_name='عکس پروفایل',
         null=True,
         blank=True,
         upload_to=image_upload_to,
     )
+    first_name = None
+    last_name = None
 
     def __str__(self):
         return f'{self.username}'
 
+    def to_dict(self):
+        return {
+            'username': self.username,
+            'phone_number': self.phone_number,
+            'is_phone_number_verify': self.is_phone_number_verify,
+            'email': self.email,
+            'is_email_verify': self.is_email_verify,
+            'avatar': str(self.avatar),
+        }
+
     def save(self, *args, **kwargs):
-        from django.contrib.auth.hashers import make_password
-        self.password = make_password(self.password)
-        super(User, self).save(*args, **kwargs)
+        if len(self.password) > 30:
+            super(User, self).save(*args, **kwargs)
+        else:
+            from django.contrib.auth.hashers import make_password
+            self.password = make_password(self.password)
+            super(User, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'کاربر'
