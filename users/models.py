@@ -8,6 +8,13 @@ from base_information_setting.models import BaseInformation, BaseInformationHead
 
 
 class User(AbstractUser):
+    email = models.EmailField(
+        verbose_name='ایمیل',
+        unique=True,
+        blank=True,
+        null=True,
+    )
+
     _phone_number_validator = UnicodePhoneNumberValidator()
     phone_number = models.CharField(
         verbose_name='شماره تلفن',
