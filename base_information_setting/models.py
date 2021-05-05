@@ -65,6 +65,12 @@ class BaseInformation(models.Model):
 
 
 class Zone(models.Model):
+    code = models.IntegerField(
+        verbose_name='کد',
+        unique=True,
+        blank=False,
+        null=False,
+    )
     title = models.CharField(
         verbose_name='عنوان منطقه',
         max_length=32,
