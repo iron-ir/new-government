@@ -32,14 +32,31 @@ def standard_gender(gender: str) -> str:
     return '3'
 
 
-def standard_birth_date(birth_date: str):
-    return None
+def standard_birth_date(birth_date: str, btype: str = 'solar'):
+    birth_date = birth_date.split('-')
+    if len(birth_date) != 3:
+        return None
+    import jdatetime
+    import datetime
+    year = int(birth_date[0])
+    month = int(birth_date[1])
+    day = int(birth_date[2])
+    now = jdatetime.date.today()
+    if btype == 'solar':
+        now = jdatetime.date.today()
+
+    if btype == 'gregorian':
+        now = datetime.date.today()
+
+    birth_date = datetime.date(year=year, month=month, day=day)
+    if birth_date > now:
+        return None
+    return birth_date
 
 
-def standard_birth_place(birth_place_code: str):
-    birth_place_code = int(birth_place_code)
+def standard_birth_place(birth_place_id: str):
     from base_information_setting.models import Zone
-    return Zone.objects.filter(code=birth_place_code).first()
+    return Zone.objects.filter(code=birth_place_id).first()
 
 
 def standard_official_website(official_website: str):
@@ -48,3 +65,13 @@ def standard_official_website(official_website: str):
 
 def standard_avatar(avatar: str):
     return None
+
+
+def standard_nationality(nationality_id: str):
+    from base_information_setting.models import BaseInformation
+    return BaseInformation.objects.filter(pk=nationality_id).first()
+
+
+def standard_religion(religion_id: str):
+    from base_information_setting.models import BaseInformation
+    return BaseInformation.objects.filter(pk=religion_id).first()
