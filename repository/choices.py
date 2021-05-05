@@ -13,17 +13,24 @@ def YES_OR_NO_RETURNER(value):
 
 
 GENDER_CHOICES = (
-    ('0', 'خانوم'),
-    ('1', 'آقا'),
+    ('0', 'خالی'),
+    ('1', 'خانوم'),
+    ('2', 'آقا'),
+    ('3', 'دیگر'),
 )
-GENDER_DEFAULT = '1'
+GENDER_DEFAULT = '0'
 
 
 def GENDER_RETURNER(value):
     if value == '0':
-        return 'خانوم'
+        return 'خالی'
     if value == '1':
+        return 'خانوم'
+    if value == '2':
         return 'آقا'
+    if value == '3':
+        return 'دیگر'
+
     return 'نامعلوم'
 
 
