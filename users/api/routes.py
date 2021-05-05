@@ -18,7 +18,7 @@ from repository.response import true_response, false_response
 from repository.messages import *
 from repository.regular_expression import username_reg, email_reg, password_reg, nationalcode_reg
 from repository.standard import standard_phone_number, standard_gender, standard_birth_date, standard_birth_place, \
-    standard_official_website, standard_avatar
+    standard_official_website, standard_avatar, standard_nationality, standard_religion
 from .serializers import UserLoginSerializer
 from django.db.models import Q
 
@@ -38,6 +38,11 @@ def signup(request: HttpRequest):
             return false_response(
                 message=MESSAGE_4_USERNAME_IS_INCORRECT,
             )
+        usr = User.objects.filter(username=user_name).first()
+        if usr is not None:
+            return false_response(
+                message=MESSAGE_4_USER_IS_EXIST,
+            )
     phone_number = None
     if 'phone_number' in request.POST:
         phone_number = request.POST['phone_number']
@@ -46,6 +51,11 @@ def signup(request: HttpRequest):
             return false_response(
                 message=MESSAGE_4_PHONENUMBER_IS_INCORRECT,
             )
+        usr = User.objects.filter(phone_number=phone_number).first()
+        if usr is not None:
+            return false_response(
+                message=MESSAGE_4_USER_IS_EXIST,
+            )
     email_address = None
     if 'email' in request.POST:
         email_address = request.POST['email']
@@ -53,18 +63,13 @@ def signup(request: HttpRequest):
             return false_response(
                 message=MESSAGE_4_EMAIL_IS_INCORRECT,
             )
+        usr = User.objects.filter(email=email_address).first()
+        if usr is not None:
+            return false_response(
+                message=MESSAGE_4_USER_IS_EXIST,
+            )
     if user_name is None:
         user_name = phone_number if phone_number is not None else email_address
-
-    usr = User.objects.filter(
-        Q(username=user_name) |
-        Q(phone_number=phone_number) |
-        Q(email=email_address)
-    ).first()
-    if usr is not None:
-        return false_response(
-            message=MESSAGE_4_USER_IS_EXIST,
-        )
 
     if 'password' not in request.POST:
         return false_response(
@@ -144,7 +149,7 @@ def logout(request: HttpRequest):
 @login_required
 def update(request: HttpRequest):
     usr = request.user
-    if 'username' in request.POST:
+    if 'username' in request.POST and len(request.POST['username']) > 0:
         user_name = request.POST['username']
         if username_reg.match(user_name) is None:
             return false_response(
@@ -156,7 +161,7 @@ def update(request: HttpRequest):
                 message=MESSAGE_4_USER_IS_EXIST,
             )
         usr.username = user_name
-    if 'phone_number' in request.POST:
+    if 'phone_number' in request.POST and len(request.POST['phone_number']) > 0:
         phone_number = request.POST['phone_number']
         phone_number = standard_phone_number(phone_number)
         if phone_number is None:
@@ -169,7 +174,7 @@ def update(request: HttpRequest):
                 message=MESSAGE_4_USER_IS_EXIST,
             )
         usr.phone_number = phone_number
-    if 'email' in request.POST:
+    if 'email' in request.POST and len(request.POST['email']) > 0:
         email_address = request.POST['email']
         if email_reg.match(email_address) is None:
             return false_response(
@@ -181,44 +186,42 @@ def update(request: HttpRequest):
                 message=MESSAGE_4_USER_IS_EXIST,
             )
         usr.email = email_address
-    if 'password' in request.POST:
+    if 'password' in request.POST and len(request.POST['password']) > 0:
         password = request.POST['password']
         if password_reg.match(password) is None:
             return false_response(
                 message=MESSAGE_4_PASSWORD_IS_INCORRECT,
             )
         usr.password = password
-    if 'avatar' in request.POST:
+    if 'avatar' in request.POST and len(request.POST['avatar']) > 0:
         usr.avatar = standard_avatar(request.POST['avatar'])
-    if 'first_name' in request.POST:
+    if 'first_name' in request.POST and len(request.POST['first_name']) > 0:
         usr.first_name = request.POST['first_name']
-    if 'last_name' in request.POST:
+    if 'last_name' in request.POST and len(request.POST['last_name']) > 0:
         usr.last_name = request.POST['last_name']
-    if 'last_name' in request.POST:
-        usr.last_name = request.POST['last_name']
-    if 'gender' in request.POST:
+    if 'gender' in request.POST and len(request.POST['gender']) > 0:
         usr.gender = standard_gender(request.POST['gender'])
-    if 'national_code' in request.POST:
+    if 'national_code' in request.POST and len(request.POST['national_code']) > 0:
         national_code = request.POST['national_code']
         if nationalcode_reg.match(national_code) is None:
             return false_response(
                 message=MESSAGE_4_NATIONALCODE_IS_INCORRECT,
             )
         usr.national_code = national_code
-    if 'father_name' in request.POST:
+    if 'father_name' in request.POST and len(request.POST['father_name']) > 0:
         usr.father_name = request.POST['father_name']
-    if 'mother_name' in request.POST:
+    if 'mother_name' in request.POST and len(request.POST['mother_name']) > 0:
         usr.mother_name = request.POST['mother_name']
-    if 'birth_date' in request.POST:
+    if 'birth_date' in request.POST and len(request.POST['birth_date']) > 0:
         usr.birth_date = standard_birth_date(request.POST['birth_date'])
-    if 'birth_place_code' in request.POST:
-        usr.birth_place = standard_birth_place(request.POST['birth_place_code'])
-    if 'nationality' in request.POST:
-        usr.nationality = request.POST['nationality']
-    if 'religion' in request.POST:
-        usr.religion = request.POST['religion']
-    if 'official_website' in request.POST:
-        usr.official_website = standard_official_website(request.POST['religion'])
+    if 'birth_place_id' in request.POST and len(request.POST['birth_place_id']) > 0:
+        usr.birth_place = standard_birth_place(request.POST['birth_place_id'])
+    if 'nationality_id' in request.POST and len(request.POST['nationality_id']) > 0:
+        usr.nationality = standard_nationality(request.POST['nationality_id'])
+    if 'religion_id' in request.POST and len(request.POST['religion_id']) > 0:
+        usr.religion = standard_religion(request.POST['religion_id'])
+    if 'official_website' in request.POST and len(request.POST['official_website']) > 0:
+        usr.official_website = standard_official_website(request.POST['official_website'])
 
     usr.save()
     return true_response(
@@ -227,3 +230,4 @@ def update(request: HttpRequest):
             'user': usr.to_dict()
         }
     )
+
