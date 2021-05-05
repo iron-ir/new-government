@@ -62,6 +62,7 @@ class BaseInformation(models.Model):
     class Meta:
         verbose_name = 'اطلاعات پایه'
         verbose_name_plural = 'اطلاعات پایه ها'
+        unique_together = ('code', 'header',)
 
 
 class Zone(models.Model):
