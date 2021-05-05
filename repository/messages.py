@@ -39,3 +39,7 @@ MESSAGE_4_PASSWORD_IS_INCORRECT = "فرمت کلمه عبور به درستی ا
 
 MESSAGE_4_USER_SIGNUP_SUCCESSFUL = 'ثبت نام کاربر با موفقیت انجام شد.'
 MESSAGE_4_USER_IS_EXIST = 'کاربر با این مشخصات قبلا ثبت نام نموده است.'
+
+MESSAGE_4_USER_UPDATE_SUCCESSFUL = 'بروزرسانی اطلاعات کاربر با موفقیت انجام شد.'
+
+MESSAGE_4_NATIONALCODE_IS_INCORRECT = 'کد ملی وارد شده صحیح نمی باشد.'

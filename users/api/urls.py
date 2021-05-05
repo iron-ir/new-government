@@ -9,6 +9,6 @@ urlpatterns = [
     path('signup', routes.signup),
     path('login', routes.login),
     path('logout', routes.logout),
-    # path('update', ),
+    path('update', routes.update),
     # path('register/candidate')
 ]
