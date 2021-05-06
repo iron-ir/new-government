@@ -202,3 +202,19 @@ def FIELD_OF_STUDY_RETURNER(value):
     if value == '0':
         return 'خالی'
     return 'نامعلوم'
+
+
+PRIVACY_CHOICES = (
+    ('0', 'خصوصی'),
+    ('1', 'نمایش عمومی'),
+)
+
+PRIVACY_DEFAULT = '0'
+
+
+def PRIVACY_RETURNER(value):
+    if value == '0':
+        return 'خصوصی'
+    if value == '1':
+        return 'نمایش عمومی'
+    return 'نامعلوم'
