@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from repository.uploader import image_upload_to, file_upload_to
 from repository.regular_expression import UnicodeNationalcodeValidator, UnicodePhoneNumberValidator
 from repository.choices import *
-from base_information_setting.models import BaseInformation, BaseInformationHeader, Zone
+from base_information_settings.models import BaseInformation, BaseInformationHeader, Zone
 
 
 class Privacy(models.Model):

@@ -46,8 +46,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'users.apps.UsersConfig',
-    'base_information_setting.apps.BaseInformationSettingConfig',
-    'election.apps.ElectionConfig',
+    'base_information_settings.apps.BaseInformationSettingsConfig',
+    'elections.apps.ElectionsConfig',
     'polling.apps.PollingConfig',
 
     'users.static',
@@ -169,7 +169,7 @@ ADMIN_ORDERING = [
         ],
     ),
     (
-        'election', [
+        'elections', [
             'Election',
             'RegisterCandidatePerElection',
             'Candidate',
@@ -182,7 +182,7 @@ ADMIN_ORDERING = [
         ],
     ),
     (
-        'base_information_setting',
+        'base_information_settings',
         [
             'BaseInformationHeader',
             'BaseInformation',

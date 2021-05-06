@@ -55,7 +55,7 @@ def standard_birth_date(birth_date: str, btype: str = 'solar'):
 
 
 def standard_birth_place(birth_place_id: str):
-    from base_information_setting.models import Zone
+    from base_information_settings.models import Zone
     return Zone.objects.filter(code=birth_place_id).first()
 
 
@@ -68,10 +68,10 @@ def standard_avatar(avatar: str):
 
 
 def standard_nationality(nationality_id: str):
-    from base_information_setting.models import BaseInformation
+    from base_information_settings.models import BaseInformation
     return BaseInformation.objects.filter(pk=nationality_id).first()
 
 
 def standard_religion(religion_id: str):
-    from base_information_setting.models import BaseInformation
+    from base_information_settings.models import BaseInformation
     return BaseInformation.objects.filter(pk=religion_id).first()

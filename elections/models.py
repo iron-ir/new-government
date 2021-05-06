@@ -1,5 +1,5 @@
 from django.db import models
-from base_information_setting.models import BaseInformation, BaseInformationHeader, Zone
+from base_information_settings.models import BaseInformation, BaseInformationHeader, Zone
 from users.models import User
 
 
@@ -111,7 +111,7 @@ class RegisterCandidatePerElection(models.Model):
     def to_dict(self):
         return {
             'user': self.candidate.to_dict(),
-            'election': self.election.to_dict(),
+            'elections': self.election.to_dict(),
             'candidate_group': self.candidate_group.to_dict(),
             'date_time': self.date_time,
             'slogan': self.slogan,
