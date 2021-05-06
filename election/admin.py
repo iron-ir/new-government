@@ -10,3 +10,13 @@ class ElectionAdmin(admin.ModelAdmin):
 @admin.register(RegisterCandidatePerElection)
 class RegisterCandidatePerElectionAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Candidate)
+class CandidateAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(CandidateGroup)
+class CandidateGroupAdmin(admin.ModelAdmin):
+    pass

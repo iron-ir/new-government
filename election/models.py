@@ -1,6 +1,6 @@
 from django.db import models
 from base_information_setting.models import BaseInformation, BaseInformationHeader, Zone
-from users.models import User, CandidateGroup
+from users.models import User
 
 
 class Election(models.Model):
@@ -62,9 +62,9 @@ class Election(models.Model):
 
 
 class RegisterCandidatePerElection(models.Model):
-    user = models.ForeignKey(
+    candidate = models.ForeignKey(
         verbose_name='نامزد',
-        to=User,
+        to='Candidate',
         null=False,
         blank=False,
         on_delete=models.CASCADE,
@@ -78,7 +78,7 @@ class RegisterCandidatePerElection(models.Model):
     )
     candidate_group = models.ForeignKey(
         verbose_name='ائتلاف',
-        to=CandidateGroup,
+        to='CandidateGroup',
         null=True,
         blank=True,
         on_delete=models.CASCADE,
@@ -106,14 +106,70 @@ class RegisterCandidatePerElection(models.Model):
         verbose_name_plural = 'نمایندگان شرکت کننده در انتخابات ها'
 
     def __str__(self):
-        return f'{self.user}, {self.election}'
+        return f'{self.candidate}, {self.election}'
 
     def to_dict(self):
         return {
-            'user': self.user.to_dict(),
+            'user': self.candidate.to_dict(),
             'election': self.election.to_dict(),
             'candidate_group': self.candidate_group.to_dict(),
             'date_time': self.date_time,
             'slogan': self.slogan,
             'candidate_title': self.candidate_title,
+        }
+
+
+class Candidate(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        verbose_name='کاربر',
+        null=False,
+        blank=False,
+    )
+    _is_suspension = models.BooleanField(
+        verbose_name='تعلیق',
+        default=False,
+    )
+
+    @property
+    def is_suspension(self):
+        if self.user.is_personal_information_verify:
+            self._is_suspension = False
+        else:
+            self._is_suspension = True
+        return self._is_suspension
+
+    def __str__(self):
+        return f'{self.user}'
+
+    def to_dict(self):
+        return {
+            'user': self.user.to_dict(),
+            'is_suspension': self.is_suspension,
+        }
+
+    class Meta:
+        verbose_name = 'کاندید'
+        verbose_name_plural = 'کاندیدها'
+
+
+class CandidateGroup(models.Model):
+    title = models.CharField(
+        verbose_name='عنوان',
+        null=False,
+        blank=False,
+        max_length=128,
+    )
+
+    class Meta:
+        verbose_name = 'ائتلاف'
+        verbose_name_plural = 'ائتلافات'
+
+    def __str__(self):
+        return f'{self.title}'
+
+    def to_dict(self):
+        return {
+            'title': self.title,
         }
