@@ -1,6 +1,6 @@
 from django.db import models
-from base_information_setting.models import BaseInformation,BaseInformationHeader,Zone
-from users.models import Candidate,CandidateGroup
+from base_information_setting.models import BaseInformation, BaseInformationHeader, Zone
+from users.models import User, CandidateGroup
 
 
 class Election(models.Model):
@@ -11,7 +11,6 @@ class Election(models.Model):
         blank=False,
         null=False,
     )
-
     form_year = models.IntegerField(
         verbose_name='از سال',
         null=False,
@@ -50,11 +49,22 @@ class Election(models.Model):
     def __str__(self):
         return f'{self.period} {self.etype}'
 
+    def to_dict(self):
+        return {
+            'type': self.etype.to_dict(),
+            'form_year': self.form_year,
+            'to_year': self.to_year,
+            'period': self.period,
+            'date': self.date,
+            'duration_of_the_event': self.duration_of_the_event,
+            'round': self.round,
+        }
+
 
 class RegisterCandidatePerElection(models.Model):
-    candidate = models.ForeignKey(
+    user = models.ForeignKey(
         verbose_name='نامزد',
-        to=Candidate,
+        to=User,
         null=False,
         blank=False,
         on_delete=models.CASCADE,
@@ -96,4 +106,14 @@ class RegisterCandidatePerElection(models.Model):
         verbose_name_plural = 'نمایندگان شرکت کننده در انتخابات ها'
 
     def __str__(self):
-        return f'{self.candidate}, {self.election}'
+        return f'{self.user}, {self.election}'
+
+    def to_dict(self):
+        return {
+            'user': self.user.to_dict(),
+            'election': self.election.to_dict(),
+            'candidate_group': self.candidate_group.to_dict(),
+            'date_time': self.date_time,
+            'slogan': self.slogan,
+            'candidate_title': self.candidate_title,
+        }

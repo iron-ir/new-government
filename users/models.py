@@ -8,6 +8,10 @@ from base_information_setting.models import BaseInformation, BaseInformationHead
 
 
 class User(AbstractUser):
+    is_andidate = models.BooleanField(
+        verbose_name='نامزد انتخابات',
+        default=False,
+    )
     _is_verify = models.BooleanField(
         verbose_name='تایید',
         default=False,
@@ -17,19 +21,13 @@ class User(AbstractUser):
     def is_verify(self):
         self._is_verify = self.is_email_verify and \
                           self.is_phone_number_verify and \
-                          self.is_avatar_verify and \
-                          self.is_birth_date_verify and \
-                          self.is_birth_place_verify and \
-                          self.is_father_name_verify and \
-                          self.is_first_name_verify and \
-                          self.is_gendre_verify and \
-                          self.is_last_name_verify and \
-                          self.is_mother_name_verify and \
-                          self.is_national_code_verify and \
-                          self.is_national_code_verify and \
-                          self.is_official_website_verify and \
-                          self.is_religion_verify
+                          self.is_personal_information_verify
         return self._is_verify
+
+    is_personal_information_verify = models.BooleanField(
+        verbose_name='تایید اطلاعات شخصی',
+        default=False,
+    )
 
     email = models.EmailField(
         verbose_name='ایمیل',
@@ -60,19 +58,11 @@ class User(AbstractUser):
         blank=True,
         upload_to=image_upload_to,
     )
-    is_avatar_verify = models.BooleanField(
-        verbose_name='تایید عکس پروفایل',
-        default=False,
-    )
     first_name = models.CharField(
         verbose_name='نام',
         max_length=64,
         null=True,
         blank=True,
-    )
-    is_first_name_verify = models.BooleanField(
-        verbose_name='تایید نام',
-        default=False,
     )
     last_name = models.CharField(
         verbose_name='نام خانوادگی',
@@ -80,19 +70,11 @@ class User(AbstractUser):
         null=True,
         blank=True,
     )
-    is_last_name_verify = models.BooleanField(
-        verbose_name='تایید نام خانوادگی',
-        default=False,
-    )
     _gender = models.CharField(
         verbose_name='جنسیت',
         max_length=1,
         default=GENDER_DEFAULT,
         choices=GENDER_CHOICES,
-    )
-    is_gendre_verify = models.BooleanField(
-        verbose_name='تایید جنسیت',
-        default=False,
     )
 
     @property
@@ -112,20 +94,12 @@ class User(AbstractUser):
         unique=True,
         validators=[_national_code_validator],
     )
-    is_national_code_verify = models.BooleanField(
-        verbose_name='تایید شماره ملی',
-        default=False,
-    )
 
     father_name = models.CharField(
         verbose_name='نام پدر',
         max_length=32,
         null=True,
         blank=True,
-    )
-    is_father_name_verify = models.BooleanField(
-        verbose_name='تایید عکس پروفایل',
-        default=False,
     )
 
     mother_name = models.CharField(
@@ -134,19 +108,11 @@ class User(AbstractUser):
         null=True,
         blank=True,
     )
-    is_mother_name_verify = models.BooleanField(
-        verbose_name='تایید عکس پروفایل',
-        default=False,
-    )
 
     birth_date = models.DateField(
         verbose_name='تاریخ تولد',
         blank=True,
         null=True,
-    )
-    is_birth_date_verify = models.BooleanField(
-        verbose_name='تایید تاریخ تولد',
-        default=False,
     )
 
     birth_place = models.ForeignKey(
@@ -155,10 +121,6 @@ class User(AbstractUser):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-    )
-    is_birth_place_verify = models.BooleanField(
-        verbose_name='تایید محل تولد',
-        default=False,
     )
 
     nationality = models.ForeignKey(
@@ -169,10 +131,6 @@ class User(AbstractUser):
         blank=True,
         related_name='bi_c_nationality',
     )
-    is_nationality_verify = models.BooleanField(
-        verbose_name='تایید ملیت',
-        default=False,
-    )
     religion = models.ForeignKey(
         verbose_name='دین',
         to=BaseInformation,
@@ -181,20 +139,12 @@ class User(AbstractUser):
         blank=True,
         related_name='bi_c_religion',
     )
-    is_religion_verify = models.BooleanField(
-        verbose_name='تایید دین',
-        default=False,
-    )
 
     official_website = models.URLField(
         verbose_name='وب سایت رسمی',
         null=True,
         blank=True,
         unique=True,
-    )
-    is_official_website_verify = models.BooleanField(
-        verbose_name='تایید وب سایت رسمی',
-        default=False,
     )
 
     def __str__(self):
@@ -203,35 +153,24 @@ class User(AbstractUser):
     def to_dict(self):
         return {
             'is_verify': self.is_verify,
+            'is_email_verify': self.is_email_verify,
+            'is_phone_number_verify': self.is_phone_number_verify,
+            'is_personal_information_verify': self.is_personal_information_verify,
             'username': self.username,
             'email': self.email,
-            'is_email_verify': self.is_email_verify,
             'phone_number': self.phone_number,
-            'is_phone_number_verify': self.is_phone_number_verify,
             'avatar': str(self.avatar),
-            'is_avatar_verify': self.is_avatar_verify,
             'first_name': self.first_name,
-            'is_first_name_verify': self.is_first_name_verify,
             'last_name': self.last_name,
-            'is_last_name_verify': self.is_last_name_verify,
             'gender': self.gender,
-            'is_gendre_verify': self.is_gendre_verify,
             'national_code': self.national_code,
-            'is_national_code_verify': self.is_national_code_verify,
             'father_name': self.father_name,
-            'is_father_name_verify': self.is_father_name_verify,
             'mother_name': self.mother_name,
-            'is_mother_name_verify': self.is_mother_name_verify,
             'birth_date': self.birth_date,
-            'is_birth_date_verify': self.is_birth_date_verify,
             'birth_place': self.birth_place,
-            'is_birth_place_verify': self.is_birth_place_verify,
             'nationality': self.nationality,
-            'is_nationality_verify': self.is_nationality_verify,
             'religion': self.religion,
-            'is_religion_verify': self.is_religion_verify,
-            'official_website': self.official_website,
-            'is_official_website_verify': str(self.is_official_website_verify),
+            'official_website': str(self.official_website),
             'last_login': self.last_login,
         }
 
@@ -248,24 +187,11 @@ class User(AbstractUser):
         verbose_name_plural = 'کاربران'
 
 
-class Candidate(models.Model):
-    user = models.OneToOneField(
-        verbose_name='کاربر',
-        to=User,
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-    )
-
-    def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
-
-    class Meta:
-        verbose_name = 'نامزد'
-        verbose_name_plural = 'نامزدها'
-
-
 class WorkExpiration(models.Model):
+    is_verify = models.BooleanField(
+        verbose_name='تایید',
+        default=False,
+    )
     user = models.ForeignKey(
         verbose_name='کاربر',
         to=User,
@@ -322,8 +248,24 @@ class WorkExpiration(models.Model):
     def __str__(self):
         return f'{self.user}: {self.post_title}'
 
+    def to_dict(self):
+        return {
+            'is_verify': self.is_verify,
+            'user': self.user.to_dict(),
+            'post_title': self.post_title,
+            'cooperation_type': self.cooperation_type.to_dict(),
+            'from_date': self.from_date,
+            'to_date': self.to_date,
+            'activity_type': self.activity_type.to_dict(),
+            'organization_name': self.organization_name,
+        }
+
 
 class EducationHistory(models.Model):
+    is_verify = models.BooleanField(
+        verbose_name='تایید',
+        default=False,
+    )
     user = models.ForeignKey(
         verbose_name='کاربر',
         to=User,
@@ -388,11 +330,24 @@ class EducationHistory(models.Model):
     def __str__(self):
         return f'{self.user}: {self.degree_type} {self.field_of_study}'
 
+    def to_dict(self):
+        return {
+            'is_verify': self.is_verify,
+            'user': self.user.to_dict(),
+            'degree_type': self.degree_type.to_dict(),
+            'field_of_study': self.field_of_study.to_dict(),
+            'place_of_study_type': self.place_of_study_type.to_dict(),
+            'place_of_study': self.place_of_study,
+            'zone': self.zone.to_dict(),
+            'graduation_date': self.graduation_date,
+            'is_study': self.is_study,
+        }
+
 
 class Standpoint(models.Model):
-    candidate = models.ForeignKey(
+    user = models.ForeignKey(
         verbose_name='نامزد',
-        to=Candidate,
+        to=User,
         on_delete=models.CASCADE,
         null=False,
         blank=False,
@@ -412,13 +367,11 @@ class Standpoint(models.Model):
         verbose_name='فعال',
         default=False,
     )
-
     link = models.URLField(
         verbose_name='لینک',
         blank=True,
         null=True,
     )
-
     attachment = models.FileField(
         verbose_name='پیوست',
         blank=True,
@@ -431,18 +384,31 @@ class Standpoint(models.Model):
         verbose_name_plural = 'دیدگاه ها'
 
     def __str__(self):
-        return f'{self.candidate.user}: {self.title}'
+        return f'{self.user}: {self.title}'
+
+    def to_dict(self):
+        return {
+            'user': self.user.to_dict(),
+            'title': self.title,
+            'description': self.description,
+            'is_active': self.is_active,
+            'link': self.link,
+            'attachment': self.attachment,
+        }
 
 
 class Effect(models.Model):
-    candidate = models.ForeignKey(
+    is_active = models.BooleanField(
+        verbose_name='فعال',
+        default=False,
+    )
+    user = models.ForeignKey(
         verbose_name='کاربر',
-        to=Candidate,
+        to=User,
         on_delete=models.CASCADE,
         null=False,
         blank=False,
     )
-
     title = models.CharField(
         verbose_name='عنوان',
         max_length=128,
@@ -453,10 +419,6 @@ class Effect(models.Model):
         verbose_name='توضیحات',
         null=True,
         blank=True,
-    )
-    is_active = models.BooleanField(
-        verbose_name='فعال',
-        default=False,
     )
     link = models.URLField(
         verbose_name='لینک',
@@ -475,25 +437,37 @@ class Effect(models.Model):
         verbose_name_plural = 'آثار'
 
     def __str__(self):
-        return f'{self.candidate.user}: {self.title}'
+        return f'{self.user}: {self.title}'
+
+    def to_dict(self):
+        return {
+            'is_active': self.is_active,
+            'user': self.user.to_dict(),
+            'title': self.title,
+            'description': self.description,
+            'link': self.link,
+            'attachment': self.attachment,
+        }
 
 
 class UserRelation(models.Model):
-    candidate = models.ForeignKey(
-        to=Candidate,
+    a_user = models.ForeignKey(
+        to=User,
         on_delete=models.CASCADE,
         verbose_name='نامزد',
         null=False,
         blank=False,
+        related_name='u_ur_a_user',
     )
-    user = models.ForeignKey(
+    b_user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
         verbose_name='کاربر',
         null=False,
         blank=False,
+        related_name='u_ur_b_user',
     )
-    relation_type = models.ForeignKey(
+    rtype = models.ForeignKey(
         verbose_name='نوع رابطه',
         to=BaseInformation,
         on_delete=models.CASCADE,
@@ -516,7 +490,16 @@ class UserRelation(models.Model):
         verbose_name_plural = 'روابط افراد'
 
     def __str__(self):
-        return f'{self.candidate.user}, {self.user}'
+        return f'{self.a_user}, {self.b_user}'
+
+    def to_dict(self):
+        return {
+            'a_user': self.a_user.to_dict(),
+            'b_user': self.b_user.to_dict(),
+            'type': self.rtype.to_dict(),
+            'form_date': self.form_date,
+            'to_date': self.to_date,
+        }
 
 
 class CandidateGroup(models.Model):
@@ -533,3 +516,8 @@ class CandidateGroup(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+
+    def to_dict(self):
+        return {
+            'title': self.title,
+        }
