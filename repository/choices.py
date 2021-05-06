@@ -34,12 +34,6 @@ def GENDER_RETURNER(value):
     return 'نامعلوم'
 
 
-VCODE_CHOICES = (
-    ('1', 'phone_number'),
-    ('2', 'email_address'),
-)
-VCODE_DEFAULT = '1'
-
 DEGREE_TYPE_CHOICES = (
     ('0', 'خالی'),
     ('1', 'متوسطه'),
@@ -218,3 +212,25 @@ def PRIVACY_RETURNER(value):
     if value == '1':
         return 'نمایش عمومی'
     return 'نامعلوم'
+
+
+VCODE_CHOICES = (
+    ('0', 'شماره تلفن'),
+    ('1', 'ایمیل'),
+)
+
+VCODE_DEFAULT = '0'
+
+
+def VCODE_RETURNER(value):
+    if value == '0':
+        return 'شماره تلفن'
+    if value == '1':
+        return 'ایمیل'
+    return 'نامعلوم'
+
+
+def is_true_value(value):
+    if value == 'نامعلوم':
+        return False
+    return True
