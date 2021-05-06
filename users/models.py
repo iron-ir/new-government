@@ -768,21 +768,21 @@ class Effect(models.Model):
 
 
 class UserRelation(models.Model):
-    a_user = models.ForeignKey(
+    base_user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
         verbose_name='نامزد',
         null=False,
         blank=False,
-        related_name='u_ur_a_user',
+        related_name='u_ur_base_user',
     )
-    b_user = models.ForeignKey(
+    related_user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
         verbose_name='کاربر',
         null=False,
         blank=False,
-        related_name='u_ur_b_user',
+        related_name='u_ur_related_user',
     )
     rtype = models.ForeignKey(
         verbose_name='نوع رابطه',
