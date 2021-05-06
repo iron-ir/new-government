@@ -2,13 +2,13 @@ from django.contrib import admin
 from .models import *
 
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+@admin.register(Privacy)
+class PrivacyAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Candidate)
-class CandidateAdmin(admin.ModelAdmin):
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
     pass
 
 
@@ -37,10 +37,6 @@ class UserRelationAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(CandidateGroup)
-class CandidateGroupAdmin(admin.ModelAdmin):
-    pass
-
-# admin.site.site_header = "ادمین"
-# admin.site.site_title = "پرتال ادمین"
-# admin.site.index_title = "به پرتال ادمین خوش آمدید."
+admin.site.site_header = "ادمین سایت رفراندوم"
+admin.site.site_title = "پرتال ادمین"
+admin.site.index_title = "به پرتال ادمین سایت رفراندوم خوش آمدید."

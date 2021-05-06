@@ -13,7 +13,7 @@ import re
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import Context, loader
-from users.models import User, Candidate
+from users.models import User
 from repository.response import true_response, false_response
 from repository.messages import *
 from repository.regular_expression import username_reg, email_reg, password_reg, nationalcode_reg
@@ -26,54 +26,67 @@ from django.db.models import Q
 @require_POST
 def signup(request: HttpRequest):
     if 'username' not in request.POST and \
-            len(request.POST['username']) == 0 and \
             'phone_number' not in request.POST and \
-            len(request.POST['phone_number']) == 0 and \
-            'email' not in request.POST and \
-            len(request.POST['email']) == 0:
+            'email' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_AT_LEAST_THESE_FIELDS,
+        )
+    i = 0
+    if 'username' in request.POST:
+        if 0 == len(request.POST['username']):
+            i += 1
+    if 'phone_number' in request.POST:
+        if 0 == len(request.POST['phone_number']):
+            i += 1
+    if 'email' in request.POST:
+        if 0 == len(request.POST['email']):
+            i += 1
+    if i == 3:
         return false_response(
             message=MESSAGE_4_AT_LEAST_THESE_FIELDS,
         )
     user_name = None
-    if 'username' in request.POST and len(request.POST['username']) != 0:
-        user_name = request.POST['username']
-        if username_reg.match(user_name) is None:
-            return false_response(
-                message=MESSAGE_4_USERNAME_IS_INCORRECT,
-            )
-        usr = User.objects.filter(username=user_name).first()
-        if usr is not None:
-            return false_response(
-                message=MESSAGE_4_USER_IS_EXIST,
-            )
+    if 'username' in request.POST:
+        if len(request.POST['username']) != 0:
+            user_name = request.POST['username']
+            if username_reg.match(user_name) is None:
+                return false_response(
+                    message=MESSAGE_4_USERNAME_IS_INCORRECT,
+                )
+            usr = User.objects.filter(username=user_name).first()
+            if usr is not None:
+                return false_response(
+                    message=MESSAGE_4_USER_IS_EXIST,
+                )
     phone_number = None
-    if 'phone_number' in request.POST and len(request.POST['phone_number']) != 0:
-        phone_number = request.POST['phone_number']
-        phone_number = standard_phone_number(phone_number)
-        if phone_number is None:
-            return false_response(
-                message=MESSAGE_4_PHONENUMBER_IS_INCORRECT,
-            )
-        usr = User.objects.filter(phone_number=phone_number).first()
-        if usr is not None:
-            return false_response(
-                message=MESSAGE_4_USER_IS_EXIST,
-            )
+    if 'phone_number' in request.POST:
+        if len(request.POST['phone_number']) != 0:
+            phone_number = request.POST['phone_number']
+            phone_number = standard_phone_number(phone_number)
+            if phone_number is None:
+                return false_response(
+                    message=MESSAGE_4_PHONENUMBER_IS_INCORRECT,
+                )
+            usr = User.objects.filter(phone_number=phone_number).first()
+            if usr is not None:
+                return false_response(
+                    message=MESSAGE_4_USER_IS_EXIST,
+                )
     email_address = None
-    if 'email' in request.POST and len(request.POST['email']) != 0:
-        email_address = request.POST['email']
-        if email_reg.match(email_address) is None:
-            return false_response(
-                message=MESSAGE_4_EMAIL_IS_INCORRECT,
-            )
-        usr = User.objects.filter(email=email_address).first()
-        if usr is not None:
-            return false_response(
-                message=MESSAGE_4_USER_IS_EXIST,
-            )
-    if user_name is None:
-        user_name = phone_number if phone_number is not None else email_address
-
+    if 'email' in request.POST:
+        if len(request.POST['email']) != 0:
+            email_address = request.POST['email']
+            if email_reg.match(email_address) is None:
+                return false_response(
+                    message=MESSAGE_4_EMAIL_IS_INCORRECT,
+                )
+            usr = User.objects.filter(email=email_address).first()
+            if usr is not None:
+                return false_response(
+                    message=MESSAGE_4_USER_IS_EXIST,
+                )
+        if user_name is None:
+            user_name = phone_number if phone_number is not None else email_address
     if 'password' not in request.POST:
         return false_response(
             message=MESSAGE_4_PASSWORD_FIELD_IS_EMPTY,
@@ -178,7 +191,9 @@ def update(request: HttpRequest):
                 return false_response(
                     message=MESSAGE_4_USER_IS_EXIST,
                 )
-            usr.phone_number = phone_number
+            if phone_number != usr.phone_number:
+                usr.is_phone_number_verify = False
+                usr.phone_number = phone_number
     if 'email' in request.POST:
         if len(request.POST['email']) != 0:
             email_address = request.POST['email']
@@ -191,7 +206,9 @@ def update(request: HttpRequest):
                 return false_response(
                     message=MESSAGE_4_USER_IS_EXIST,
                 )
-            usr.email = email_address
+            if email_address != usr.email:
+                usr.is_email_verify = False
+                usr.email = email_address
     if 'password' in request.POST:
         if len(request.POST['password']) != 0:
             password = request.POST['password']
@@ -205,13 +222,20 @@ def update(request: HttpRequest):
             usr.avatar = standard_avatar(request.POST['avatar'])
     if 'first_name' in request.POST:
         if len(request.POST['first_name']) != 0:
-            usr.first_name = request.POST['first_name']
+            if usr.first_name != request.POST['first_name']:
+                usr.is_personal_information_verify = False
+                usr.first_name = request.POST['first_name']
     if 'last_name' in request.POST:
         if len(request.POST['last_name']) != 0:
-            usr.last_name = request.POST['last_name']
+            if usr.last_name != request.POST['last_name']:
+                usr.is_personal_information_verify = False
+                usr.last_name = request.POST['last_name']
+    # todo
     if 'gender' in request.POST:
         if len(request.POST['gender']) != 0:
-            usr.gender = standard_gender(request.POST['gender'])
+            if usr.gender != standard_gender(request.POST['gender']):
+                usr.is_personal_information_verify = False
+                usr.gender = standard_gender(request.POST['gender'])
     if 'national_code' in request.POST:
         if len(request.POST['national_code']) != 0:
             national_code = request.POST['national_code']
@@ -219,28 +243,49 @@ def update(request: HttpRequest):
                 return false_response(
                     message=MESSAGE_4_NATIONALCODE_IS_INCORRECT,
                 )
-            usr.national_code = national_code
+            if usr.national_code != national_code:
+                usr.is_personal_information_verify = False
+                usr.national_code = national_code
     if 'father_name' in request.POST:
         if len(request.POST['father_name']) != 0:
-            usr.father_name = request.POST['father_name']
+            if usr.father_name != request.POST['father_name']:
+                usr.is_personal_information_verify = False
+                usr.father_name = request.POST['father_name']
     if 'mother_name' in request.POST:
         if len(request.POST['mother_name']) != 0:
-            usr.mother_name = request.POST['mother_name']
+            if usr.mother_name != request.POST['mother_name']:
+                usr.is_personal_information_verify = False
+                usr.mother_name = request.POST['mother_name']
+    # todo
     if 'birth_date' in request.POST:
         if len(request.POST['birth_date']) != 0:
-            usr.birth_date = standard_birth_date(request.POST['birth_date'])
+            if usr.birth_date != standard_birth_date(request.POST['birth_date']):
+                usr.is_personal_information_verify = False
+                usr.birth_date = standard_birth_date(request.POST['birth_date'])
+    # todo
     if 'birth_place_id' in request.POST:
         if len(request.POST['birth_place_id']) != 0:
-            usr.birth_place = standard_birth_place(request.POST['birth_place_id'])
+            if usr.birth_place != standard_birth_place(request.POST['birth_place_id']):
+                usr.is_personal_information_verify = False
+                usr.birth_place = standard_birth_place(request.POST['birth_place_id'])
+    # todo
     if 'nationality_id' in request.POST:
         if len(request.POST['nationality_id']) != 0:
-            usr.nationality = standard_nationality(request.POST['nationality_id'])
+            if usr.nationality != standard_nationality(request.POST['nationality_id']):
+                usr.is_personal_information_verify = False
+                usr.nationality = standard_nationality(request.POST['nationality_id'])
+    # todo
     if 'religion_id' in request.POST:
         if len(request.POST['religion_id']) != 0:
-            usr.religion = standard_religion(request.POST['religion_id'])
+            if usr.religion != standard_religion(request.POST['religion_id']):
+                usr.is_personal_information_verify = False
+                usr.religion = standard_religion(request.POST['religion_id'])
+    # todo
     if 'official_website' in request.POST:
         if len(request.POST['official_website']) != 0:
-            usr.official_website = standard_official_website(request.POST['official_website'])
+            if usr.official_website != standard_official_website(request.POST['official_website']):
+                usr.is_personal_information_verify = False
+                usr.official_website = standard_official_website(request.POST['official_website'])
 
     usr.save()
     return true_response(
@@ -254,54 +299,17 @@ def update(request: HttpRequest):
 @require_POST
 @login_required
 def verification_of_information(request: HttpRequest):
-    from users.models import Candidate
     usr = request.user
-    if Candidate.objects.filter(user__username=usr.username).first() is not None:
-        return true_response(
-            message=MESSAGE_4_YOU_CANDIDATE
-        )
-
-    if usr.phone_number is None or not usr.is_phone_number_verify:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-    if usr.email is None or not usr.is_email_verify:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-    if usr.avatar is None or not usr.is_avatar_verify:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-    if usr.first_name is None or not usr.is_first_name_verify:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-    if usr.last_name is None or not usr.is_last_name_verify:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-    if usr.gender == '0' or not usr.is_gendre_verify:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-    if usr.national_code is None or not usr.is_national_code_verify:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-    if usr.birth_date is None or not usr.is_birth_date_verify:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-    if usr.birth_place is None or not usr.is_birth_place_verify:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-    if usr.nationality is None or not usr.is_nationality_verify:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-    if usr.religion is None or not usr.is_religion_verify:
+    if usr.is_candidate:
+        if usr.is_suspension:
+            return false_response(
+                message=MESSAGE_4_YOU_SUSPENDION
+            )
+        else:
+            return true_response(
+                message=MESSAGE_4_YOU_CANDIDATE
+            )
+    if not usr.is_personal_information_verify:
         return false_response(
             message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
         )

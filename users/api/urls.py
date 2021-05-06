@@ -10,5 +10,5 @@ urlpatterns = [
     path('login', routes.login),
     path('logout', routes.logout),
     path('update', routes.update),
-    path('candidate/verify/info/', routes.verification_of_information)
+    # path('candidate/verify/info/', routes.verification_of_information)
 ]

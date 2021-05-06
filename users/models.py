@@ -1,16 +1,333 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from repository.uploader import image_upload_to, file_upload_to
-from repository.regular_expression import UnicodeNationalcodeValidator, UnicodePhoneNumberValidator, \
-    UnicodePasswordValidator
+from repository.regular_expression import UnicodeNationalcodeValidator, UnicodePhoneNumberValidator
 from repository.choices import *
 from base_information_setting.models import BaseInformation, BaseInformationHeader, Zone
 
 
+class Privacy(models.Model):
+    _email = models.CharField(
+        max_length=2,
+        verbose_name='ایمیل',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def email(self):
+        return PRIVACY_RETURNER(self._email)
+
+    @email.setter
+    def email(self, value):
+        self._email = value
+
+    _phone_number = models.CharField(
+        max_length=2,
+        verbose_name='شماره تلفن',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def phone_number(self):
+        return PRIVACY_RETURNER(self._phone_number)
+
+    @phone_number.setter
+    def phone_number(self, value):
+        self._phone_number = value
+
+    _avatar = models.CharField(
+        max_length=2,
+        verbose_name='عکس پروفایل',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def avatar(self):
+        return PRIVACY_RETURNER(self._avatar)
+
+    @avatar.setter
+    def avatar(self, value):
+        self._avatar = value
+
+    _first_name = models.CharField(
+        max_length=2,
+        verbose_name='نام',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def first_name(self):
+        return PRIVACY_RETURNER(self._first_name)
+
+    @first_name.setter
+    def first_name(self, value):
+        self._first_name = value
+
+    _last_name = models.CharField(
+        max_length=2,
+        verbose_name='نام خانوادگی',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def last_name(self):
+        return PRIVACY_RETURNER(self._last_name)
+
+    @last_name.setter
+    def last_name(self, value):
+        self._last_name = value
+
+    _gender = models.CharField(
+        max_length=2,
+        verbose_name='جنسیت',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def gender(self):
+        return PRIVACY_RETURNER(self._gender)
+
+    @gender.setter
+    def gender(self, value):
+        self._gender = value
+
+    _national_code = models.CharField(
+        max_length=2,
+        verbose_name='کدملی',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def national_code(self):
+        return PRIVACY_RETURNER(self._national_code)
+
+    @national_code.setter
+    def national_code(self, value):
+        self._national_code = value
+
+    _father_name = models.CharField(
+        max_length=2,
+        verbose_name='نام پدر',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def father_name(self):
+        return PRIVACY_RETURNER(self._father_name)
+
+    @father_name.setter
+    def father_name(self, value):
+        self._father_name = value
+
+    _mother_name = models.CharField(
+        max_length=2,
+        verbose_name='نام مادر',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def mother_name(self):
+        return PRIVACY_RETURNER(self._mother_name)
+
+    @mother_name.setter
+    def mother_name(self, value):
+        self._mother_name = value
+
+    _birth_date = models.CharField(
+        max_length=2,
+        verbose_name='تاریخ تولد',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def birth_date(self):
+        return PRIVACY_RETURNER(self._birth_date)
+
+    @birth_date.setter
+    def birth_date(self, value):
+        self._birth_date = value
+
+    _birth_place = models.CharField(
+        max_length=2,
+        verbose_name='محل تولد',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def birth_place(self):
+        return PRIVACY_RETURNER(self._birth_place)
+
+    @birth_place.setter
+    def birth_place(self, value):
+        self._birth_place = value
+
+    _nationality = models.CharField(
+        max_length=2,
+        verbose_name='ملیت',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def nationality(self):
+        return PRIVACY_RETURNER(self._nationality)
+
+    @nationality.setter
+    def nationality(self, value):
+        self._nationality = value
+
+    _religion = models.CharField(
+        max_length=2,
+        verbose_name='دین',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def religion(self):
+        return PRIVACY_RETURNER(self._religion)
+
+    @religion.setter
+    def religion(self, value):
+        self._religion = value
+
+    _official_website = models.CharField(
+        max_length=2,
+        verbose_name='وب سایت شخصی',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def official_website(self):
+        return PRIVACY_RETURNER(self._official_website)
+
+    @official_website.setter
+    def official_website(self, value):
+        self._official_website = value
+
+    _work_expiration = models.CharField(
+        max_length=2,
+        verbose_name='سوابق کاری',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def work_expiration(self):
+        return PRIVACY_RETURNER(self._work_expiration)
+
+    @work_expiration.setter
+    def work_expiration(self, value):
+        self._work_expiration = value
+
+    _education_history = models.CharField(
+        max_length=2,
+        verbose_name='سوابق کاری',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def education_history(self):
+        return PRIVACY_RETURNER(self._education_history)
+
+    @education_history.setter
+    def education_history(self, value):
+        self._education_history = value
+
+    _standpoint = models.CharField(
+        max_length=2,
+        verbose_name='سوابق کاری',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def standpoint(self):
+        return PRIVACY_RETURNER(self._standpoint)
+
+    @standpoint.setter
+    def standpoint(self, value):
+        self._standpoint = value
+
+    _effect = models.CharField(
+        max_length=2,
+        verbose_name='سوابق کاری',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def effect(self):
+        return PRIVACY_RETURNER(self._effect)
+
+    @effect.setter
+    def effect(self, value):
+        self._effect = value
+
+    _user_relation = models.CharField(
+        max_length=2,
+        verbose_name='سوابق کاری',
+        default=PRIVACY_DEFAULT,
+        choices=PRIVACY_CHOICES,
+    )
+
+    @property
+    def user_relation(self):
+        return PRIVACY_RETURNER(self._user_relation)
+
+    @user_relation.setter
+    def user_relation(self, value):
+        self._user_relation = value
+
+    def to_dict(self):
+        return {
+            'email': self.email,
+            'phone_number': self.phone_number,
+            'avatar': self.avatar,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'gender': self.gender,
+            'national_code': self.national_code,
+            'father_name': self.father_name,
+            'mother_name': self.mother_name,
+            'birth_date': self.birth_date,
+            'birth_place': self.birth_place,
+            'nationality': self.nationality,
+            'religion': self.religion,
+            'official_website': self.official_website,
+            'work_expiration': self.work_expiration,
+            'education_history': self.education_history,
+            'standpoint': self.standpoint,
+            'effect': self.effect,
+            'user_relation': self.user_relation,
+
+        }
+
+    class Meta:
+        verbose_name = 'تنظیمات حریم شخصی'
+        verbose_name_plural = 'تنظیمات حریم‌های شخصی'
+
+
 class User(AbstractUser):
-    is_andidate = models.BooleanField(
-        verbose_name='نامزد انتخابات',
-        default=False,
+    privacy = models.OneToOneField(
+        to=Privacy,
+        on_delete=models.CASCADE,
+        verbose_name='حریم شخصی',
+        null=True,
+        blank=True,
     )
     _is_verify = models.BooleanField(
         verbose_name='تایید',
@@ -499,25 +816,4 @@ class UserRelation(models.Model):
             'type': self.rtype.to_dict(),
             'form_date': self.form_date,
             'to_date': self.to_date,
-        }
-
-
-class CandidateGroup(models.Model):
-    title = models.CharField(
-        verbose_name='عنوان',
-        null=False,
-        blank=False,
-        max_length=128,
-    )
-
-    class Meta:
-        verbose_name = 'ائتلاف'
-        verbose_name_plural = 'ائتلافات'
-
-    def __str__(self):
-        return f'{self.title}'
-
-    def to_dict(self):
-        return {
-            'title': self.title,
         }
