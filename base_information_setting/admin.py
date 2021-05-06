@@ -15,3 +15,4 @@ class BaseInformationAdmin(admin.ModelAdmin):
 @admin.register(Zone)
 class ZoneAdmin(admin.ModelAdmin):
     pass
+

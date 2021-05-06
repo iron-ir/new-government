@@ -4,3 +4,5 @@ from django.apps import AppConfig
 class BaseInformationSettingConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'base_information_setting'
+    verbose_name = 'تنظیمات مربوط به اطلاعات پایه'
+
