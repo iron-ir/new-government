@@ -158,6 +158,30 @@ LAST_ELECTION_PERIOD = '1400:03:28'
 
 ADMIN_ORDERING = [
     (
+        'users', [
+            'User',
+            'EducationHistory',
+            'WorkExpiration',
+            'Effect',
+            'Standpoint',
+            'UserRelation',
+            'Privacy',
+        ],
+    ),
+    (
+        'election', [
+            'Election',
+            'RegisterCandidatePerElection',
+            'Candidate',
+            'CandidateGroup',
+        ],
+    ),
+    (
+        'auth', [
+            'Group',
+        ],
+    ),
+    (
         'base_information_setting',
         [
             'BaseInformationHeader',
@@ -165,27 +189,6 @@ ADMIN_ORDERING = [
             'Zone',
         ],
     ),
-    (
-        'election', [
-            'Election',
-            'RegisterCandidatePerElection',
-        ],
-    ),
-    (
-        'users', [
-            'User',
-            'Candidate',
-            'EducationHistory',
-            'WorkExpiration',
-            'Effect',
-            'Standpoint',
-            'UserRelation',
-            'CandidateGroup',
-        ],), (
-        'auth', [
-            'Group',
-        ],),
-
 ]
 
 
