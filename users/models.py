@@ -4,6 +4,7 @@ from repository.uploader import image_upload_to, file_upload_to
 from repository.regular_expression import UnicodeNationalcodeValidator, UnicodePhoneNumberValidator
 from repository.choices import *
 from base_information_settings.models import BaseInformation, BaseInformationHeader, Zone
+from repository.choices import VCODE_CHOICES, VCODE_RETURNER
 
 
 class Privacy(models.Model):
@@ -505,6 +506,11 @@ class User(AbstractUser):
 
 
 class WorkExpiration(models.Model):
+    place_number_for_sorting = models.IntegerField(
+        verbose_name='شماره مرتب سازی',
+        null=True,
+        blank=True,
+    )
     is_verify = models.BooleanField(
         verbose_name='تایید',
         default=False,
@@ -561,12 +567,14 @@ class WorkExpiration(models.Model):
     class Meta:
         verbose_name = 'سابقه کاری'
         verbose_name_plural = 'سوابق کاری'
+        unique_together = ('place_number_for_sorting', 'user')
 
     def __str__(self):
         return f'{self.user}: {self.post_title}'
 
     def to_dict(self):
         return {
+            'place_number_for_sorting': self.place_number_for_sorting,
             'is_verify': self.is_verify,
             'user': self.user.to_dict(),
             'post_title': self.post_title,
@@ -577,8 +585,25 @@ class WorkExpiration(models.Model):
             'organization_name': self.organization_name,
         }
 
+    def _to_dict_4_dev(self):
+        return {
+            'place_number_for_sorting': self.place_number_for_sorting,
+            'is_verify': self.is_verify,
+            'post_title': self.post_title,
+            'cooperation_type': self.cooperation_type.to_dict(),
+            'from_date': self.from_date,
+            'to_date': self.to_date,
+            'activity_type': self.activity_type.to_dict(),
+            'organization_name': self.organization_name,
+        }
+
 
 class EducationHistory(models.Model):
+    place_number_for_sorting = models.IntegerField(
+        verbose_name='شماره مرتب سازی',
+        null=True,
+        blank=True,
+    )
     is_verify = models.BooleanField(
         verbose_name='تایید',
         default=False,
@@ -643,12 +668,14 @@ class EducationHistory(models.Model):
     class Meta:
         verbose_name = 'سابقه تحصیلی'
         verbose_name_plural = 'سوابق تحصیلی'
+        unique_together = ('place_number_for_sorting', 'user')
 
     def __str__(self):
         return f'{self.user}: {self.degree_type} {self.field_of_study}'
 
     def to_dict(self):
         return {
+            'place_number_for_sorting': self.place_number_for_sorting,
             'is_verify': self.is_verify,
             'user': self.user.to_dict(),
             'degree_type': self.degree_type.to_dict(),
@@ -660,8 +687,26 @@ class EducationHistory(models.Model):
             'is_study': self.is_study,
         }
 
+    def _to_dict_4_dev(self):
+        return {
+            'place_number_for_sorting': self.place_number_for_sorting,
+            'is_verify': self.is_verify,
+            'degree_type': self.degree_type.to_dict(),
+            'field_of_study': self.field_of_study.to_dict(),
+            'place_of_study_type': self.place_of_study_type.to_dict(),
+            'place_of_study': self.place_of_study,
+            'zone': self.zone.to_dict(),
+            'graduation_date': self.graduation_date,
+            'is_study': self.is_study,
+        }
+
 
 class Standpoint(models.Model):
+    place_number_for_sorting = models.IntegerField(
+        verbose_name='شماره مرتب سازی',
+        null=True,
+        blank=True,
+    )
     user = models.ForeignKey(
         verbose_name='نامزد',
         to=User,
@@ -699,13 +744,25 @@ class Standpoint(models.Model):
     class Meta:
         verbose_name = 'دیدگاه'
         verbose_name_plural = 'دیدگاه ها'
+        unique_together = ('place_number_for_sorting', 'user')
 
     def __str__(self):
         return f'{self.user}: {self.title}'
 
     def to_dict(self):
         return {
+            'place_number_for_sorting': self.place_number_for_sorting,
             'user': self.user.to_dict(),
+            'title': self.title,
+            'description': self.description,
+            'is_active': self.is_active,
+            'link': self.link,
+            'attachment': self.attachment,
+        }
+
+    def _to_dict_4_dev(self):
+        return {
+            'place_number_for_sorting': self.place_number_for_sorting,
             'title': self.title,
             'description': self.description,
             'is_active': self.is_active,
@@ -715,6 +772,11 @@ class Standpoint(models.Model):
 
 
 class Effect(models.Model):
+    place_number_for_sorting = models.IntegerField(
+        verbose_name='شماره مرتب سازی',
+        null=True,
+        blank=True,
+    )
     is_active = models.BooleanField(
         verbose_name='فعال',
         default=False,
@@ -752,12 +814,14 @@ class Effect(models.Model):
     class Meta:
         verbose_name = 'اثر'
         verbose_name_plural = 'آثار'
+        unique_together = ('place_number_for_sorting', 'user')
 
     def __str__(self):
         return f'{self.user}: {self.title}'
 
     def to_dict(self):
         return {
+            'place_number_for_sorting': self.place_number_for_sorting,
             'is_active': self.is_active,
             'user': self.user.to_dict(),
             'title': self.title,
@@ -766,8 +830,22 @@ class Effect(models.Model):
             'attachment': self.attachment,
         }
 
+    def _to_dict_4_dev(self):
+        return {
+            'place_number_for_sorting': self.place_number_for_sorting,
+            'is_active': self.is_active,
+            'title': self.title,
+            'description': self.description,
+            'link': self.link,
+            'attachment': self.attachment,
+        }
+
 
 class UserRelation(models.Model):
+    @property
+    def is_verify(self):
+        return self.base_user_verification and self.related_user_verification
+
     base_user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
@@ -776,6 +854,11 @@ class UserRelation(models.Model):
         blank=False,
         related_name='u_ur_base_user',
     )
+    base_user_verification = models.BooleanField(
+        verbose_name='تایید رابطه توسط کاربر پایه',
+        blank=True,
+        null=True,
+    )
     related_user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
@@ -783,6 +866,11 @@ class UserRelation(models.Model):
         null=False,
         blank=False,
         related_name='u_ur_related_user',
+    )
+    related_user_verification = models.BooleanField(
+        verbose_name='تایید رابطه توسط کاربر مرتبط',
+        blank=True,
+        null=True,
     )
     rtype = models.ForeignKey(
         verbose_name='نوع رابطه',
@@ -807,13 +895,178 @@ class UserRelation(models.Model):
         verbose_name_plural = 'روابط افراد'
 
     def __str__(self):
-        return f'{self.a_user}, {self.b_user}'
+        return f'{self.base_user}, {self.related_user}'
 
     def to_dict(self):
         return {
-            'a_user': self.a_user.to_dict(),
-            'b_user': self.b_user.to_dict(),
+            'is_verify': self.is_verify,
+            'base_user': self.base_user.to_dict(),
+            'base_user_verification': self.base_user_verification,
+            'related_user': self.related_user.to_dict(),
+            'related_user_verification': self.related_user_verification,
             'type': self.rtype.to_dict(),
             'form_date': self.form_date,
             'to_date': self.to_date,
         }
+
+    def _to_dict_4_dev(self):
+        return {
+            'is_verify': self.is_verify,
+            'related_user': self.related_user.to_dict(),
+            'type': self.rtype.to_dict(),
+            'form_date': self.form_date,
+            'to_date': self.to_date,
+        }
+
+
+class VCode(models.Model):
+    user = models.ForeignKey(
+        verbose_name='کاربر',
+        to=User,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        editable=False,
+    )
+    string = models.CharField(
+        verbose_name='کد',
+        max_length=5,
+        null=False,
+        blank=False,
+        editable=False
+    )
+    _vctype = models.CharField(
+        verbose_name='نوع',
+        max_length=2,
+        null=False,
+        blank=False,
+        choices=VCODE_CHOICES,
+    )
+
+    @property
+    def vctype(self):
+        return VCODE_RETURNER(self._vctype)
+
+    @vctype.setter
+    def vctype(self, value):
+        self._vctype = value
+
+    expiration_date = models.DateTimeField(
+        verbose_name='تاریخ انقضا',
+        null=False,
+        blank=False,
+        editable=False,
+    )
+    used = models.BooleanField(
+        verbose_name='استفاده شده',
+        default=False,
+    )
+    valid = models.BooleanField(
+        verbose_name='قابل قبول',
+        default=False,
+    )
+
+    @property
+    def expired(self):
+        from django.utils import timezone
+        now = timezone.now()
+        return self.expiration_date < now
+
+    def __str__(self):
+        return 'Expiration date: {}'.format(self.expiration_date)
+
+
+def create_vcode(user: User = None, vtype: str = None):
+    if user is None or vtype is None:
+        return None
+    last_vcodes = VCode.objects. \
+        filter(user=user). \
+        filter(vtype=vtype). \
+        filter(used=False). \
+        filter(valid=True).all()
+
+    for last_vcode in last_vcodes:
+        last_vcode.valid = False
+        last_vcode.save()
+
+    from django.utils import timezone
+    import random
+    vc = VCode()
+    vc.user = user
+
+    vcode = random.randint(10000, 99999)
+    vc.string = str(vcode)
+
+    vc.vctype = vtype
+
+    now = timezone.now()
+    delta = timezone.timedelta(minutes=10)
+    vc.expiration_date = now + delta
+
+    vc.valid = True
+    vc.save()
+    return vc.string
+
+
+def vcode_is_acceptable(code: str = None, user: User = None, vtype: str = None) -> bool:
+    if code is None or user is None or vtype is None:
+        return False
+    vcode = VCode.objects. \
+        filter(string=code). \
+        filter(user=user). \
+        filter(vtype=vtype). \
+        filter(used=False). \
+        filter(valid=True).first()
+    if vcode is None:
+        return False
+    if vcode.expired:
+        return False
+    vcode.used = True
+    vcode.save()
+    return True
+
+
+def all_user_information(user: User) -> dict:
+    work_expirations = WorkExpiration.objects.filter(user=user).all()
+    work_expirations_to_dict = {}
+    i = 0
+    for w_e in work_expirations:
+        i += 1
+        work_expirations_to_dict[i] = w_e._to_dict_4_dev()
+
+    education_histories = EducationHistory.objects.filter(user=user).all()
+    education_histories_to_dict = {}
+    i = 0
+    for e_h in education_histories:
+        i += 1
+        education_histories_to_dict[i] = e_h._to_dict_4_dev()
+
+    standpoints = Standpoint.objects.filter(user=user).all()
+    standpoints_to_dict = {}
+    i = 0
+    for s in standpoints:
+        i += 1
+        standpoints_to_dict[i] = s._to_dict_4_dev()
+
+    effects = Effect.objects.filter(user=user).all()
+    effects_to_dict = {}
+    i = 0
+    for e in effects:
+        i += 1
+        effects_to_dict[i] = e._to_dict_4_dev()
+
+    user_relations = UserRelation.objects.filter(base_user=user).all()
+    user_relations_to_dict = {}
+    i = 0
+    for u_r in user_relations:
+        i += 1
+        user_relations_to_dict[i] = u_r._to_dict_4_dev()
+
+    return {
+        'user': user.to_dict(),
+        'work_expirations': work_expirations,
+        'education_histories': education_histories,
+        'standpoints': standpoints,
+        'effects': effects,
+        'user_relations': user_relations,
+    }

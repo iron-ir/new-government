@@ -37,6 +37,11 @@ class UserRelationAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(VCode)
+class VcodeAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.site_header = "ادمین سایت رفراندوم"
 admin.site.site_title = "پرتال ادمین"
 admin.site.index_title = "به پرتال ادمین سایت رفراندوم خوش آمدید."

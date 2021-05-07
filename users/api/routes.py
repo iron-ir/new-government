@@ -21,7 +21,7 @@ from repository.regular_expression import username_reg, email_reg, password_reg,
 from repository.functions import send_sms_vcode, send_email_vcode
 from .serializers import UserLoginSerializer
 from django.db.models import Q
-from base_information_settings.models import create_vcode, vcode_is_acceptable
+from users.models import create_vcode, vcode_is_acceptable
 from users.models import all_user_information, WorkExpiration, EducationHistory, Standpoint, Effect, UserRelation
 
 
