@@ -938,9 +938,10 @@ class VCode(models.Model):
     _vctype = models.CharField(
         verbose_name='نوع',
         max_length=2,
+        choices=VCODE_CHOICES,
         null=False,
         blank=False,
-        choices=VCODE_CHOICES,
+        editable=False,
     )
 
     @property
@@ -959,11 +960,9 @@ class VCode(models.Model):
     )
     used = models.BooleanField(
         verbose_name='استفاده شده',
-        default=False,
-    )
-    valid = models.BooleanField(
-        verbose_name='قابل قبول',
-        default=False,
+        null=True,
+        blank=True,
+        editable=False,
     )
 
     @property
@@ -975,6 +974,10 @@ class VCode(models.Model):
     def __str__(self):
         return 'Expiration date: {}'.format(self.expiration_date)
 
+    class Meta:
+        verbose_name = 'کد تایید'
+        verbose_name_plural = 'کدهای تایید'
+
 
 def create_vcode(user: User = None, vtype: str = None):
     if user is None or vtype is None:
@@ -982,11 +985,10 @@ def create_vcode(user: User = None, vtype: str = None):
     last_vcodes = VCode.objects. \
         filter(user=user). \
         filter(vtype=vtype). \
-        filter(used=False). \
-        filter(valid=True).all()
+        filter(used=None).all()
 
     for last_vcode in last_vcodes:
-        last_vcode.valid = False
+        last_vcode.used = False
         last_vcode.save()
 
     from django.utils import timezone
@@ -1003,7 +1005,6 @@ def create_vcode(user: User = None, vtype: str = None):
     delta = timezone.timedelta(minutes=10)
     vc.expiration_date = now + delta
 
-    vc.valid = True
     vc.save()
     return vc.string
 
@@ -1015,8 +1016,7 @@ def vcode_is_acceptable(code: str = None, user: User = None, vtype: str = None) 
         filter(string=code). \
         filter(user=user). \
         filter(vtype=vtype). \
-        filter(used=False). \
-        filter(valid=True).first()
+        filter(used=None).first()
     if vcode is None:
         return False
     if vcode.expired:

@@ -38,7 +38,7 @@ class UserRelationAdmin(admin.ModelAdmin):
 
 
 @admin.register(VCode)
-class VcodeAdmin(admin.ModelAdmin):
+class VCodeAdmin(admin.ModelAdmin):
     pass
 
 

@@ -166,6 +166,7 @@ ADMIN_ORDERING = [
             'Standpoint',
             'UserRelation',
             'Privacy',
+            'VCode',
         ],
     ),
     (
