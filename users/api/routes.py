@@ -9,18 +9,20 @@ from django.http import HttpRequest, HttpResponseForbidden, HttpResponseNotFound
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib import messages
 import re
-
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import Context, loader
 from users.models import User
 from repository.response import true_response, false_response
+from repository.standard import *
 from repository.messages import *
+from repository.definitions import *
 from repository.regular_expression import username_reg, email_reg, password_reg, nationalcode_reg
-from repository.standard import standard_phone_number, standard_gender, standard_birth_date, standard_birth_place, \
-    standard_official_website, standard_avatar, standard_nationality, standard_religion
+from repository.functions import send_sms_vcode, send_email_vcode
 from .serializers import UserLoginSerializer
 from django.db.models import Q
+from base_information_settings.models import create_vcode, vcode_is_acceptable
+from users.models import all_user_information, WorkExpiration, EducationHistory, Standpoint, Effect, UserRelation
 
 
 @require_POST
@@ -230,10 +232,9 @@ def update(request: HttpRequest):
             if usr.last_name != request.POST['last_name']:
                 usr.is_personal_information_verify = False
                 usr.last_name = request.POST['last_name']
-    # todo
     if 'gender' in request.POST:
         if len(request.POST['gender']) != 0:
-            if usr.gender != standard_gender(request.POST['gender']):
+            if usr._gender != standard_gender(request.POST['gender']):
                 usr.is_personal_information_verify = False
                 usr.gender = standard_gender(request.POST['gender'])
     if 'national_code' in request.POST:
@@ -256,36 +257,36 @@ def update(request: HttpRequest):
             if usr.mother_name != request.POST['mother_name']:
                 usr.is_personal_information_verify = False
                 usr.mother_name = request.POST['mother_name']
-    # todo
     if 'birth_date' in request.POST:
         if len(request.POST['birth_date']) != 0:
-            if usr.birth_date != standard_birth_date(request.POST['birth_date']):
+            birth_date = standard_birth_date(request.POST['birth_date'])
+            if usr.birth_date != birth_date:
                 usr.is_personal_information_verify = False
-                usr.birth_date = standard_birth_date(request.POST['birth_date'])
-    # todo
+                usr.birth_date = birth_date
     if 'birth_place_id' in request.POST:
         if len(request.POST['birth_place_id']) != 0:
-            if usr.birth_place != standard_birth_place(request.POST['birth_place_id']):
+            birth_place = standard_birth_place(request.POST['birth_place_id'])
+            if usr.birth_place != birth_place:
                 usr.is_personal_information_verify = False
-                usr.birth_place = standard_birth_place(request.POST['birth_place_id'])
-    # todo
+                usr.birth_place = birth_place
     if 'nationality_id' in request.POST:
         if len(request.POST['nationality_id']) != 0:
-            if usr.nationality != standard_nationality(request.POST['nationality_id']):
+            nationality = standard_nationality(request.POST['nationality_id'])
+            if usr.nationality != nationality:
                 usr.is_personal_information_verify = False
-                usr.nationality = standard_nationality(request.POST['nationality_id'])
-    # todo
+                usr.nationality = nationality
     if 'religion_id' in request.POST:
         if len(request.POST['religion_id']) != 0:
-            if usr.religion != standard_religion(request.POST['religion_id']):
+            religion = standard_religion(request.POST['religion_id'])
+            if usr.religion != religion:
                 usr.is_personal_information_verify = False
-                usr.religion = standard_religion(request.POST['religion_id'])
-    # todo
+                usr.religion = religion
     if 'official_website' in request.POST:
         if len(request.POST['official_website']) != 0:
-            if usr.official_website != standard_official_website(request.POST['official_website']):
+            official_website = standard_official_website(request.POST['official_website'])
+            if usr.official_website != official_website:
                 usr.is_personal_information_verify = False
-                usr.official_website = standard_official_website(request.POST['official_website'])
+                usr.official_website = official_website
 
     usr.save()
     return true_response(
@@ -296,36 +297,371 @@ def update(request: HttpRequest):
     )
 
 
+@require_GET
+@login_required
+def sms_vcode(request: HttpRequest):
+    if request.user.phone_number is None:
+        return false_response(
+            message=MESSAGE_4_PHONE_NUMBER_NOT_EXIST,
+        )
+    res = send_sms_vcode(
+        vcode=create_vcode(user=request.user, vtype=PHONE_NUMBER),
+        phone_number=request.user.phone_number,
+    )
+    if not res:
+        return false_response(
+            message=MESSAGE_4_VCODE_SMS_FAIL,
+        )
+    return true_response(
+        message=MESSAGE_4_VCODE_SMS,
+    )
+
+
+@require_GET
+@login_required
+def email_vcode(request: HttpRequest):
+    if request.user.email is None:
+        return false_response(
+            message=MESSAGE_4_EMAIL_NOT_EXIST,
+        )
+    res = send_email_vcode(
+        vcode=create_vcode(user=request.user, vtype=EMAIL_ADDRESS),
+        email=request.user.email,
+    )
+    if not res:
+        return false_response(
+            message=MESSAGE_4_VCODE_EMAIL_FAIL,
+        )
+    return true_response(
+        message=MESSAGE_4_VCODE_EMAIL,
+    )
+
+
 @require_POST
 @login_required
-def verification_of_information(request: HttpRequest):
-    usr = request.user
-    if usr.is_candidate:
-        if usr.is_suspension:
-            return false_response(
-                message=MESSAGE_4_YOU_SUSPENDION
-            )
-        else:
-            return true_response(
-                message=MESSAGE_4_YOU_CANDIDATE
-            )
-    if not usr.is_personal_information_verify:
+def confirm_phone_number(request: HttpRequest):
+    if 'code' not in request.POST:
         return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
+            message=MESSAGE_4_VCODE_PHONE_NUMBER_FIELD_IS_EMPTY,
         )
-    from users.models import EducationHistory, WorkExpiration
-    if EducationHistory.objects.filter(user=usr).all() is None:
+    if len(request.POST['code']) == 0:
         return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
+            message=MESSAGE_4_VCODE_PHONE_NUMBER_FIELD_IS_EMPTY,
         )
-    if WorkExpiration.objects.filter(user=usr).all() is None:
-        return false_response(
-            message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
-        )
-
-    cndd = Candidate()
-    cndd.user = usr
-    cndd.save()
-    return true_response(
-        message=MESSAGE_4_YOU_CANDIDATE
+    res = vcode_is_acceptable(
+        code=request.POST['code'],
+        user=request.user,
+        vtype=PHONE_NUMBER,
     )
+    if not res:
+        return false_response(
+            message=MESSAGE_4_VCODE_PHONE_NUMBER_IS_NOT_VALID,
+        )
+    request.user.is_phone_number_verify = True
+    request.user.save()
+    return true_response(
+        message=MESSAGE_4_VCODE_PHONE_NUMBER_IS_VALID,
+    )
+
+
+@require_POST
+@login_required
+def confirm_email_address(request: HttpRequest):
+    if 'code' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_VCODE_EMAIL_FIELD_IS_EMPTY,
+        )
+    if len(request.POST['code']) == 0:
+        return false_response(
+            message=MESSAGE_4_VCODE_EMAIL_FIELD_IS_EMPTY,
+        )
+    res = vcode_is_acceptable(
+        code=request.POST['code'],
+        user=request.user,
+        vtype=EMAIL_ADDRESS,
+    )
+    if not res:
+        return false_response(
+            message=MESSAGE_4_VCODE_EMAIL_IS_NOT_VALID,
+        )
+    request.user.is_email_verify = True
+    request.user.save()
+    return true_response(
+        message=MESSAGE_4_VCODE_EMAIL_IS_VALID,
+    )
+
+
+@require_GET
+@login_required
+def get_all_user_information(request: HttpRequest):
+    return true_response(
+        data=all_user_information(user=request.user),
+    )
+
+
+@require_POST
+@login_required
+def add_work_expiration(request: HttpRequest):
+    place_number_for_sorting = None
+    if 'place_number_for_sorting' in request.POST:
+        place_number_for_sorting = int(request.POST['place_number_for_sorting'])
+    if 'post_title' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_POST_TITLE_FIELD_IS_EMPTY,
+        )
+    post_title = request.POST['post_title']
+    cooperation_type_id = None
+    if 'cooperation_type_id' in request.POST:
+        cooperation_type_id = standard_base_information_obj(request.POST['cooperation_type_id'])
+    from_date = None
+    if 'from_date' in request.POST:
+        from_date = standard_date(request.POST['from_date'])
+    to_date = None
+    if 'to_date' in request.POST:
+        to_date = standard_date(request.POST['to_date'])
+    activity_type_id = None
+    if 'activity_type_id' in request.POST:
+        activity_type_id = standard_base_information_obj(request.POST['activity_type_id'])
+    organization_name = None
+    if 'organization_name' in request.POST:
+        organization_name = request.POST['organization_name']
+
+    work_expiration = WorkExpiration()
+    work_expiration.user = request.user
+    work_expiration.place_number_for_sorting = place_number_for_sorting
+    work_expiration.post_title = post_title
+    work_expiration.cooperation_type_id = cooperation_type_id
+    work_expiration.from_date = from_date
+    work_expiration.to_date = to_date
+    work_expiration.activity_type_id = activity_type_id
+    work_expiration.organization_name = organization_name
+    work_expiration.save()
+
+    return true_response(
+        message=MESSAGE_4_WORK_EXPIRATION_REGISTERD,
+    )
+
+
+@require_POST
+@login_required
+def add_education_history(request: HttpRequest):
+    place_number_for_sorting = None
+    if 'place_number_for_sorting' in request.POST:
+        place_number_for_sorting = int(require_POST['place_number_for_sorting'])
+    if 'degree_type_id' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_DEGREE_TYPE_FIELD_IS_EMPTY,
+        )
+    degree_type = standard_base_information_obj(require_POST['degree_type_id'])
+    if degree_type is None:
+        return false_response(
+            message=MESSAGE_4_DEGREE_TYPE_FIELD_IS_EMPTY,
+        )
+    if 'field_of_study_id' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_FEILD_OF_STADY_FIELD_IS_EMPTY,
+        )
+    field_of_study = standard_base_information_obj(require_POST['field_of_study_id'])
+    if field_of_study is None:
+        return false_response(
+            message=MESSAGE_4_FEILD_OF_STADY_FIELD_IS_EMPTY,
+        )
+    if 'place_of_study_type_id' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_PLACE_OF_STADY_TYPE_FIELD_IS_EMPTY,
+        )
+    place_of_study_type = standard_base_information_obj(require_POST['place_of_study_type_id'])
+    if place_of_study_type is None:
+        return false_response(
+            message=MESSAGE_4_PLACE_OF_STADY_TYPE_FIELD_IS_EMPTY,
+        )
+    if 'place_of_study' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_PLACE_OF_STADY_FIELD_IS_EMPTY,
+        )
+    place_of_study = require_POST['place_of_study']
+    if 'zone_id' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_ZONE_FIELD_IS_EMPTY,
+        )
+    zone = standard_zone(require_POST['zone_id'])
+    if zone is None:
+        return false_response(
+            message=MESSAGE_4_ZONE_FIELD_IS_EMPTY,
+        )
+    graduation_date = None
+    if 'graduation_date' in request.POST:
+        graduation_date = standard_date(require_POST['graduation_date'])
+    is_study = False
+    if 'is_study' in request.POST:
+        is_study = require_POST['is_study']
+
+    education_history = EducationHistory()
+    education_history.place_number_for_sorting = place_number_for_sorting
+    education_history.use = request.user
+    education_history.degree_type = degree_type
+    education_history.field_of_study = field_of_study
+    education_history.place_of_study_type = place_of_study_type
+    education_history.place_of_study = place_of_study
+    education_history.zone = zone
+    education_history.graduation_date = graduation_date
+    education_history.is_study = is_study
+
+    education_history.save()
+
+    return true_response(
+        message=MESSAGE_4_EDUCATION_HISTORY_REGISTERD,
+    )
+
+
+@require_POST
+@login_required
+def add_standpoint(request: HttpRequest):
+    place_number_for_sorting = None
+    if 'place_number_for_sorting' in request.POST:
+        place_number_for_sorting = int(request.POST['place_number_for_sorting'])
+
+    if 'title' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_TITLE_FIELD_IS_EMPTY,
+        )
+    title = request.POST['title']
+    description = None
+    if 'description' in request.POST:
+        description = request.POST['description']
+    link = None
+    if 'link_url' in request.POST:
+        link = standard_url(request.POST['link_url'])
+    attachment = None
+    if 'attachment_path' in request.POST:
+        attachment = standard_file(request.POST['attachment_path'])
+
+    standpoint = Standpoint()
+    standpoint.place_number_for_sorting = place_number_for_sorting
+    standpoint.user = request.user
+    standpoint.title = title
+    standpoint.description = description
+    standpoint.link = link
+    standpoint.attachment = attachment
+    standpoint.save()
+
+    return true_response(
+        message=MESSAGE_4_STANDPOINT_REGISTERD,
+    )
+
+
+@require_POST
+@login_required
+def add_effect(request: HttpRequest):
+    place_number_for_sorting = None
+    if 'place_number_for_sorting' in request.POST:
+        place_number_for_sorting = int(request.POST['place_number_for_sorting'])
+
+    if 'title' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_TITLE_FIELD_IS_EMPTY,
+        )
+    title = request.POST['title']
+    description = None
+    if 'description' in request.POST:
+        description = request.POST['description']
+    link = None
+    if 'link_url' in request.POST:
+        link = standard_url(request.POST['link_url'])
+    attachment = None
+    if 'attachment_path' in request.POST:
+        attachment = standard_file(request.POST['attachment_path'])
+
+    effect = Effect()
+    effect.place_number_for_sorting = place_number_for_sorting
+    effect.user = request.user
+    effect.title = title
+    effect.description = description
+    effect.link = link
+    effect.attachment = attachment
+    effect.save()
+
+    return true_response(
+        message=MESSAGE_4_EFFECT_REGISTERD,
+    )
+
+
+@require_POST
+@login_required
+def add_user_relation(request: HttpRequest):
+    if 'related_user_id' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_RELATED_USER_FIELD_IS_EMPTY,
+        )
+    related_user = standard_user(request.POST['related_user_id'])
+    if related_user is None:
+        return false_response(
+            message=MESSAGE_4_RELATED_USER_FIELD_IS_EMPTY,
+        )
+    if 'type_id' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_RELATED_TYPE_FIELD_IS_EMPTY,
+        )
+    rtype = standard_base_information_obj(request.POST['type_id'])
+    if rtype is None:
+        return false_response(
+            message=MESSAGE_4_RELATED_TYPE_FIELD_IS_EMPTY,
+        )
+    form_date = None
+    if 'form_date' in request.POST:
+        form_date = standard_date(request.POST['form_date'])
+    to_date = None
+    if 'to_date' in request.POST:
+        to_date = standard_date(request.POST['to_date'])
+
+    user_relation = UserRelation()
+
+    user_relation.base_user = request.user
+    user_relation.base_user_verification = True
+    user_relation.related_user = related_user
+    user_relation.rtype = rtype
+    user_relation.form_date = form_date
+    user_relation.to_date = to_date
+
+    user_relation.save()
+
+    # todo dadane payam b farde dar rabete baraye taeide rabete.
+
+    return true_response(
+        message=MESSAGE_4_USER_RELATION_REGISTERD,
+    )
+
+
+# @require_POST
+# @login_required
+# def verification_of_information(request: HttpRequest):
+#     usr = request.user
+#     if usr.is_candidate:
+#         if usr.is_suspension:
+#             return false_response(
+#                 message=MESSAGE_4_YOU_SUSPENDION
+#             )
+#         else:
+#             return true_response(
+#                 message=MESSAGE_4_YOU_CANDIDATE
+#             )
+#     if not usr.is_personal_information_verify:
+#         return false_response(
+#             message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
+#         )
+#     from users.models import EducationHistory, WorkExpiration
+#     if EducationHistory.objects.filter(user=usr).all() is None:
+#         return false_response(
+#             message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
+#         )
+#     if WorkExpiration.objects.filter(user=usr).all() is None:
+#         return false_response(
+#             message=YOUR_PROFILE_INFORMATION_IS_INCOMPLETE,
+#         )
+#
+#     cndd = Candidate()
+#     cndd.user = usr
+#     cndd.save()
+#     return true_response(
+#         message=MESSAGE_4_YOU_CANDIDATE
+#     )
