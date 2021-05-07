@@ -107,6 +107,14 @@ def standard_file(file: str):
     return None
 
 
+def standard_bool(b: str):
+    if b == 'True' or b == 'true':
+        return True
+    if b == 'False' or b == 'false':
+        return False
+    return None
+
+
 def standard_user(user_id: str):
     from users.models import User
     return User.objects.filter(pk=user_id).first()

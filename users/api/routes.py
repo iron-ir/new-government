@@ -174,8 +174,8 @@ def update(request: HttpRequest):
                 return false_response(
                     message=MESSAGE_4_USERNAME_IS_INCORRECT,
                 )
-            last_usr = User.objects.filter(username=usr.username).first()
-            if last_usr is not None:
+            last_usr = User.objects.filter(username=user_name).first()
+            if last_usr is not None and last_usr != request.user:
                 return false_response(
                     message=MESSAGE_4_USER_IS_EXIST,
                 )
@@ -188,8 +188,8 @@ def update(request: HttpRequest):
                 return false_response(
                     message=MESSAGE_4_PHONENUMBER_IS_INCORRECT,
                 )
-            last_usr = User.objects.filter(phone_number=usr.phone_number).first()
-            if last_usr is not None:
+            last_usr = User.objects.filter(phone_number=phone_number).first()
+            if last_usr is not None and last_usr != request.user:
                 return false_response(
                     message=MESSAGE_4_USER_IS_EXIST,
                 )
@@ -203,8 +203,8 @@ def update(request: HttpRequest):
                 return false_response(
                     message=MESSAGE_4_EMAIL_IS_INCORRECT,
                 )
-            last_usr = User.objects.filter(email=usr.email).first()
-            if last_usr is not None:
+            last_usr = User.objects.filter(email=email_address).first()
+            if last_usr is not None and last_usr != request.user:
                 return false_response(
                     message=MESSAGE_4_USER_IS_EXIST,
                 )
@@ -243,6 +243,11 @@ def update(request: HttpRequest):
             if nationalcode_reg.match(national_code) is None:
                 return false_response(
                     message=MESSAGE_4_NATIONALCODE_IS_INCORRECT,
+                )
+            last_usr = User.objects.filter(national_code=national_code).first()
+            if last_usr is not None and last_usr != request.user:
+                return false_response(
+                    message=MESSAGE_4_USER_IS_EXIST,
                 )
             if usr.national_code != national_code:
                 usr.is_personal_information_verify = False
@@ -404,27 +409,37 @@ def get_all_user_information(request: HttpRequest):
 def add_work_expiration(request: HttpRequest):
     place_number_for_sorting = None
     if 'place_number_for_sorting' in request.POST:
-        place_number_for_sorting = int(request.POST['place_number_for_sorting'])
+        if len(request.POST['place_number_for_sorting']) != 0:
+            place_number_for_sorting = int(request.POST['place_number_for_sorting'])
     if 'post_title' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_POST_TITLE_FIELD_IS_EMPTY,
+        )
+    if len(request.POST['post_title']) == 0:
         return false_response(
             message=MESSAGE_4_POST_TITLE_FIELD_IS_EMPTY,
         )
     post_title = request.POST['post_title']
     cooperation_type_id = None
     if 'cooperation_type_id' in request.POST:
-        cooperation_type_id = standard_base_information_obj(request.POST['cooperation_type_id'])
+        if len(request.POST['cooperation_type_id']) != 0:
+            cooperation_type_id = standard_base_information_obj(request.POST['cooperation_type_id'])
     from_date = None
     if 'from_date' in request.POST:
-        from_date = standard_date(request.POST['from_date'])
+        if len(request.POST['from_date']) != 0:
+            from_date = standard_date(request.POST['from_date'])
     to_date = None
     if 'to_date' in request.POST:
-        to_date = standard_date(request.POST['to_date'])
+        if len(request.POST['to_date']) != 0:
+            to_date = standard_date(request.POST['to_date'])
     activity_type_id = None
     if 'activity_type_id' in request.POST:
-        activity_type_id = standard_base_information_obj(request.POST['activity_type_id'])
+        if len(request.POST['activity_type_id']) != 0:
+            activity_type_id = standard_base_information_obj(request.POST['activity_type_id'])
     organization_name = None
     if 'organization_name' in request.POST:
-        organization_name = request.POST['organization_name']
+        if len(request.POST['organization_name']) != 0:
+            organization_name = request.POST['organization_name']
 
     work_expiration = WorkExpiration()
     work_expiration.user = request.user
@@ -447,12 +462,17 @@ def add_work_expiration(request: HttpRequest):
 def add_education_history(request: HttpRequest):
     place_number_for_sorting = None
     if 'place_number_for_sorting' in request.POST:
-        place_number_for_sorting = int(require_POST['place_number_for_sorting'])
+        if len(request.POST['place_number_for_sorting']) != 0:
+            place_number_for_sorting = int(request.POST['place_number_for_sorting'])
     if 'degree_type_id' not in request.POST:
         return false_response(
             message=MESSAGE_4_DEGREE_TYPE_FIELD_IS_EMPTY,
         )
-    degree_type = standard_base_information_obj(require_POST['degree_type_id'])
+    if len(request.POST['degree_type_id']) == 0:
+        return false_response(
+            message=MESSAGE_4_DEGREE_TYPE_FIELD_IS_EMPTY,
+        )
+    degree_type = standard_base_information_obj(request.POST['degree_type_id'])
     if degree_type is None:
         return false_response(
             message=MESSAGE_4_DEGREE_TYPE_FIELD_IS_EMPTY,
@@ -461,7 +481,11 @@ def add_education_history(request: HttpRequest):
         return false_response(
             message=MESSAGE_4_FEILD_OF_STADY_FIELD_IS_EMPTY,
         )
-    field_of_study = standard_base_information_obj(require_POST['field_of_study_id'])
+    if len(request.POST['field_of_study_id']) == 0:
+        return false_response(
+            message=MESSAGE_4_FEILD_OF_STADY_FIELD_IS_EMPTY,
+        )
+    field_of_study = standard_base_information_obj(request.POST['field_of_study_id'])
     if field_of_study is None:
         return false_response(
             message=MESSAGE_4_FEILD_OF_STADY_FIELD_IS_EMPTY,
@@ -470,7 +494,11 @@ def add_education_history(request: HttpRequest):
         return false_response(
             message=MESSAGE_4_PLACE_OF_STADY_TYPE_FIELD_IS_EMPTY,
         )
-    place_of_study_type = standard_base_information_obj(require_POST['place_of_study_type_id'])
+    if len(request.POST['place_of_study_type_id']) == 0:
+        return false_response(
+            message=MESSAGE_4_PLACE_OF_STADY_TYPE_FIELD_IS_EMPTY,
+        )
+    place_of_study_type = standard_base_information_obj(request.POST['place_of_study_type_id'])
     if place_of_study_type is None:
         return false_response(
             message=MESSAGE_4_PLACE_OF_STADY_TYPE_FIELD_IS_EMPTY,
@@ -479,26 +507,36 @@ def add_education_history(request: HttpRequest):
         return false_response(
             message=MESSAGE_4_PLACE_OF_STADY_FIELD_IS_EMPTY,
         )
-    place_of_study = require_POST['place_of_study']
+    if len(request.POST['place_of_study']) == 0:
+        return false_response(
+            message=MESSAGE_4_PLACE_OF_STADY_FIELD_IS_EMPTY,
+        )
+    place_of_study = request.POST['place_of_study']
     if 'zone_id' not in request.POST:
         return false_response(
             message=MESSAGE_4_ZONE_FIELD_IS_EMPTY,
         )
-    zone = standard_zone(require_POST['zone_id'])
+    if len(request.POST['zone_id']) == 0:
+        return false_response(
+            message=MESSAGE_4_ZONE_FIELD_IS_EMPTY,
+        )
+    zone = standard_zone(request.POST['zone_id'])
     if zone is None:
         return false_response(
             message=MESSAGE_4_ZONE_FIELD_IS_EMPTY,
         )
     graduation_date = None
     if 'graduation_date' in request.POST:
-        graduation_date = standard_date(require_POST['graduation_date'])
+        if len(request.POST['graduation_date']) != 0:
+            graduation_date = standard_date(request.POST['graduation_date'])
     is_study = False
     if 'is_study' in request.POST:
-        is_study = require_POST['is_study']
+        if len(request.POST['is_study']) != 0:
+            is_study = standard_bool(request.POST['is_study'])
 
     education_history = EducationHistory()
     education_history.place_number_for_sorting = place_number_for_sorting
-    education_history.use = request.user
+    education_history.user = request.user
     education_history.degree_type = degree_type
     education_history.field_of_study = field_of_study
     education_history.place_of_study_type = place_of_study_type
@@ -519,26 +557,49 @@ def add_education_history(request: HttpRequest):
 def add_standpoint(request: HttpRequest):
     place_number_for_sorting = None
     if 'place_number_for_sorting' in request.POST:
-        place_number_for_sorting = int(request.POST['place_number_for_sorting'])
+        if len(request.POST['place_number_for_sorting']) != 0:
+            place_number_for_sorting = int(request.POST['place_number_for_sorting'])
+
+    if 'group_id' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_GROUP_FIELD_IS_EMPTY,
+        )
+    if len(request.POST['group_id']) == 0:
+        return false_response(
+            message=MESSAGE_4_GROUP_FIELD_IS_EMPTY,
+        )
+    group = standard_base_information_obj(request.POST['group_id'])
+    if group is None:
+        return false_response(
+            message=MESSAGE_4_GROUP_FIELD_IS_EMPTY,
+        )
 
     if 'title' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_TITLE_FIELD_IS_EMPTY,
+        )
+    if len(request.POST['title']) == 0:
         return false_response(
             message=MESSAGE_4_TITLE_FIELD_IS_EMPTY,
         )
     title = request.POST['title']
     description = None
     if 'description' in request.POST:
-        description = request.POST['description']
+        if len(request.POST['description']) != 0:
+            description = request.POST['description']
     link = None
     if 'link_url' in request.POST:
-        link = standard_url(request.POST['link_url'])
+        if len(request.POST['link_url']) != 0:
+            link = standard_url(request.POST['link_url'])
     attachment = None
     if 'attachment_path' in request.POST:
-        attachment = standard_file(request.POST['attachment_path'])
+        if len(request.POST['attachment_path']) != 0:
+            attachment = standard_file(request.POST['attachment_path'])
 
     standpoint = Standpoint()
     standpoint.place_number_for_sorting = place_number_for_sorting
     standpoint.user = request.user
+    standpoint.group = group
     standpoint.title = title
     standpoint.description = description
     standpoint.link = link
@@ -555,26 +616,48 @@ def add_standpoint(request: HttpRequest):
 def add_effect(request: HttpRequest):
     place_number_for_sorting = None
     if 'place_number_for_sorting' in request.POST:
-        place_number_for_sorting = int(request.POST['place_number_for_sorting'])
+        if len(request.POST['place_number_for_sorting']) != 0:
+            place_number_for_sorting = int(request.POST['place_number_for_sorting'])
 
+    if 'type_id' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_TYPE_FIELD_IS_EMPTY,
+        )
+    if len(request.POST['type_id']) == 0:
+        return false_response(
+            message=MESSAGE_4_TYPE_FIELD_IS_EMPTY,
+        )
+    etype = standard_base_information_obj(request.POST['type_id'])
+    if etype is None:
+        return false_response(
+            message=MESSAGE_4_TYPE_FIELD_IS_EMPTY,
+        )
     if 'title' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_TITLE_FIELD_IS_EMPTY,
+        )
+    if len(request.POST['title']) == 0:
         return false_response(
             message=MESSAGE_4_TITLE_FIELD_IS_EMPTY,
         )
     title = request.POST['title']
     description = None
     if 'description' in request.POST:
-        description = request.POST['description']
+        if len(request.POST['description']) != 0:
+            description = request.POST['description']
     link = None
     if 'link_url' in request.POST:
-        link = standard_url(request.POST['link_url'])
+        if len(request.POST['link_url']) != 0:
+            link = standard_url(request.POST['link_url'])
     attachment = None
     if 'attachment_path' in request.POST:
-        attachment = standard_file(request.POST['attachment_path'])
+        if len(request.POST['attachment_path']) != 0:
+            attachment = standard_file(request.POST['attachment_path'])
 
     effect = Effect()
     effect.place_number_for_sorting = place_number_for_sorting
     effect.user = request.user
+    effect.etype = etype
     effect.title = title
     effect.description = description
     effect.link = link
@@ -593,12 +676,30 @@ def add_user_relation(request: HttpRequest):
         return false_response(
             message=MESSAGE_4_RELATED_USER_FIELD_IS_EMPTY,
         )
+    if len(request.POST['related_user_id']) == 0:
+        return false_response(
+            message=MESSAGE_4_RELATED_USER_FIELD_IS_EMPTY,
+        )
     related_user = standard_user(request.POST['related_user_id'])
     if related_user is None:
         return false_response(
             message=MESSAGE_4_RELATED_USER_FIELD_IS_EMPTY,
         )
+    if request.user == related_user:
+        return false_response(
+            message=MESSAGE_4_USER_WITH_USER,
+        )
+    if UserRelation.objects.filter(base_user=request.user).filter(related_user=related_user).first() or \
+            UserRelation.objects.filter(related_user=request.user).filter(base_user=related_user).first():
+        return false_response(
+            message=MESSAGE_4_RELATED,
+        )
+
     if 'type_id' not in request.POST:
+        return false_response(
+            message=MESSAGE_4_RELATED_TYPE_FIELD_IS_EMPTY,
+        )
+    if len(request.POST['type_id']) == 0:
         return false_response(
             message=MESSAGE_4_RELATED_TYPE_FIELD_IS_EMPTY,
         )
@@ -609,10 +710,12 @@ def add_user_relation(request: HttpRequest):
         )
     form_date = None
     if 'form_date' in request.POST:
-        form_date = standard_date(request.POST['form_date'])
+        if len(request.POST['form_date']) != 0:
+            form_date = standard_date(request.POST['form_date'])
     to_date = None
     if 'to_date' in request.POST:
-        to_date = standard_date(request.POST['to_date'])
+        if len(request.POST['to_date']) != 0:
+            to_date = standard_date(request.POST['to_date'])
 
     user_relation = UserRelation()
 
@@ -630,7 +733,6 @@ def add_user_relation(request: HttpRequest):
     return true_response(
         message=MESSAGE_4_USER_RELATION_REGISTERD,
     )
-
 
 # @require_POST
 # @login_required

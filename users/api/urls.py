@@ -19,6 +19,7 @@ urlpatterns = [
     path('add/education/history', routes.add_education_history),
     path('add/standpoint', routes.add_standpoint),
     path('add/effect', routes.add_effect),
+    path('add/user/relation', routes.add_user_relation),
 
     # path('candidate/verify/info/', routes.verification_of_information)
 ]

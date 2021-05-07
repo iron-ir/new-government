@@ -702,6 +702,14 @@ class EducationHistory(models.Model):
 
 
 class Standpoint(models.Model):
+    group = models.ForeignKey(
+        verbose_name='دسته بندی',
+        to=BaseInformation,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        help_text='این دیدگاه مربوط به کدام دسته بندی -مثلا دسته بندی سیاست خارجی، امور اجتماعی و ...-است.'
+    )
     place_number_for_sorting = models.IntegerField(
         verbose_name='شماره مرتب سازی',
         null=True,
@@ -772,6 +780,14 @@ class Standpoint(models.Model):
 
 
 class Effect(models.Model):
+    etype = models.ForeignKey(
+        verbose_name='نوغ',
+        to=BaseInformation,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        help_text='این اثر از چه نوعی - کتاب، مقاله، فیلم و ...- است.'
+    )
     place_number_for_sorting = models.IntegerField(
         verbose_name='شماره مرتب سازی',
         null=True,
@@ -842,9 +858,15 @@ class Effect(models.Model):
 
 
 class UserRelation(models.Model):
+    _is_verify = models.BooleanField(
+        verbose_name='تایید رابطه',
+        default=False,
+    )
+
     @property
     def is_verify(self):
-        return self.base_user_verification and self.related_user_verification
+        self._is_verify = self.base_user_verification and self.related_user_verification
+        return self._is_verify
 
     base_user = models.ForeignKey(
         to=User,
@@ -893,6 +915,7 @@ class UserRelation(models.Model):
     class Meta:
         verbose_name = 'رابطه فرد'
         verbose_name_plural = 'روابط افراد'
+        unique_together = ('base_user', 'related_user')
 
     def __str__(self):
         return f'{self.base_user}, {self.related_user}'
@@ -972,7 +995,7 @@ class VCode(models.Model):
         return self.expiration_date < now
 
     def __str__(self):
-        return 'Expiration date: {}'.format(self.expiration_date)
+        return 'expired: {}, used: {}, user: {}'.format(self.expired, self.used, self.user)
 
     class Meta:
         verbose_name = 'کد تایید'
@@ -984,7 +1007,7 @@ def create_vcode(user: User = None, vtype: str = None):
         return None
     last_vcodes = VCode.objects. \
         filter(user=user). \
-        filter(vtype=vtype). \
+        filter(_vctype=vtype). \
         filter(used=None).all()
 
     for last_vcode in last_vcodes:
@@ -1015,7 +1038,7 @@ def vcode_is_acceptable(code: str = None, user: User = None, vtype: str = None) 
     vcode = VCode.objects. \
         filter(string=code). \
         filter(user=user). \
-        filter(vtype=vtype). \
+        filter(_vctype=vtype). \
         filter(used=None).first()
     if vcode is None:
         return False
@@ -1055,7 +1078,7 @@ def all_user_information(user: User) -> dict:
         i += 1
         effects_to_dict[i] = e._to_dict_4_dev()
 
-    user_relations = UserRelation.objects.filter(base_user=user).all()
+    user_relations = UserRelation.objects.filter(base_user=user).filter(_is_verify=True).all()
     user_relations_to_dict = {}
     i = 0
     for u_r in user_relations:
@@ -1064,9 +1087,9 @@ def all_user_information(user: User) -> dict:
 
     return {
         'user': user.to_dict(),
-        'work_expirations': work_expirations,
-        'education_histories': education_histories,
-        'standpoints': standpoints,
-        'effects': effects,
-        'user_relations': user_relations,
+        'work_expirations': work_expirations_to_dict,
+        'education_histories': education_histories_to_dict,
+        'standpoints': standpoints_to_dict,
+        'effects': effects_to_dict,
+        'user_relations': user_relations_to_dict,
     }
