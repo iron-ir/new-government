@@ -61,3 +61,61 @@ MESSAGE_4_YOU_CANDIDATE = 'شما برای نامزدی در انتخابات ش
 MESSAGE_4_YOU_SUSPENDION = "شما در حالت تعلیق به سر می‌برید.\n" \
                            "برای بر طرف شدن این مشکل دستور عمل‌های مربوط به نامزد شدن در انتخابات را مطالعه فرمایید و" \
                            "یا با پشتیبانی تماس بگیرید."
+
+MESSAGE_4_VCODE_SMS = 'کد تایید شماره تلفن ارسال شد.'
+
+MESSAGE_4_VCODE_SMS_FAIL = 'ارسال کد تایید شماره تلفن با مشکل برخورد کرده است.\n' \
+                           'برای حل مشکل با پشتیبانی تماس بگیرید.'
+
+MESSAGE_4_PHONE_NUMBER_NOT_EXIST = 'شما برای تایید شماره تلفن،' \
+                                   'ابتدا بایستی شماره تلفن خود را در قسمت تکمیل اطلاعات پروفایل وارد کنید و' \
+                                   ' سپس برای تایید آن به این قسمت مراجعه فرمایید.'
+
+MESSAGE_4_EMAIL_NOT_EXIST = 'شما برای تایید ایمیل،' \
+                            'ابتدا بایستی ایمیل خود را در قسمت تکمیل اطلاعات پروفایل وارد کنید و' \
+                            ' سپس برای تایید آن به این قسمت مراجعه فرمایید.'
+
+MESSAGE_4_VCODE_EMAIL_FAIL = 'ارسال کد تایید ایمیل با مشکل برخورد کرده است.\n' \
+                             'برای حل مشکل با پشتیبانی تماس بگیرید.'
+
+MESSAGE_4_VCODE_EMAIL = 'کد تایید ایمیل ارسال شد.'
+
+MESSAGE_4_VCODE_PHONE_NUMBER_FIELD_IS_EMPTY = 'فیلد مربوط به کد تایید شماره تلفن خالی است.'
+
+MESSAGE_4_VCODE_PHONE_NUMBER_IS_NOT_VALID = 'کد تایید شماره تلفن قابل قبول نمی باشد.'
+
+MESSAGE_4_VCODE_PHONE_NUMBER_IS_VALID = 'شماره تلفن شما تایید شد.'
+
+MESSAGE_4_VCODE_EMAIL_FIELD_IS_EMPTY = 'فیلد مربوط به کد تایید ایمیل خالی است.'
+
+MESSAGE_4_VCODE_EMAIL_IS_NOT_VALID = 'کد تایید ایمیل قابل قبول نمی باشد.'
+
+MESSAGE_4_VCODE_EMAIL_IS_VALID = 'ایمیل شما تایید شد.'
+
+MESSAGE_4_POST_TITLE_FIELD_IS_EMPTY = 'فیلد مربوط به عنوان جایگاه خالی می باشد.'
+
+MESSAGE_4_WORK_EXPIRATION_REGISTERD = 'سابقه کاری شما با موفقیت ثبت شد.'
+
+MESSAGE_4_DEGREE_TYPE_FIELD_IS_EMPTY = 'فیلد مربوط به مقطع تحصیلی خالی می باشد.'
+
+MESSAGE_4_FEILD_OF_STADY_FIELD_IS_EMPTY = 'فیلد مربوط به رشته تحصیلی خالی می باشد.'
+
+MESSAGE_4_PLACE_OF_STADY_TYPE_FIELD_IS_EMPTY = 'فیلد مربوط به نوع محل تحصیل خالی می باشد.'
+
+MESSAGE_4_PLACE_OF_STADY_FIELD_IS_EMPTY = 'فیلد مربوط به نام مووسسه تحصیلی خالی می باشد.'
+
+MESSAGE_4_ZONE_FIELD_IS_EMPTY = 'فیلد مربوط به موقعیت جغرافیایی خالی می باشد.'
+
+MESSAGE_4_EDUCATION_HISTORY_REGISTERD = 'سابقه تحصیلی شما با موفقیت ثبت شد.'
+
+MESSAGE_4_STANDPOINT_REGISTERD = 'دیدگاه شما با موفقیت ثبت شد.'
+
+MESSAGE_4_EFFECT_REGISTERD = 'اثر شما با موفقیت ثبت شد.'
+
+MESSAGE_4_TITLE_FIELD_IS_EMPTY = 'فیلد مربوط به عنوان خالی می باشد.'
+
+MESSAGE_4_RELATED_USER_FIELD_IS_EMPTY = 'فیلد مربوط به کاربر مرتبط خالی می باشد.'
+
+MESSAGE_4_RELATED_TYPE_FIELD_IS_EMPTY = 'فیلد مربوط به نوع رابطه خالی می باشد.'
+
+MESSAGE_4_USER_RELATION_REGISTERD = 'رابطه ی بین دو کاربر با موفقیت ثبت شد.'

@@ -59,6 +59,11 @@ def standard_birth_place(birth_place_id: str):
     return Zone.objects.filter(code=birth_place_id).first()
 
 
+def standard_zone(zone_id: str):
+    from base_information_settings.models import Zone
+    return Zone.objects.filter(code=zone_id).first()
+
+
 def standard_official_website(official_website: str):
     return None
 
@@ -75,3 +80,33 @@ def standard_nationality(nationality_id: str):
 def standard_religion(religion_id: str):
     from base_information_settings.models import BaseInformation
     return BaseInformation.objects.filter(pk=religion_id).first()
+
+
+def standard_base_information_obj(obj_id: str):
+    from base_information_settings.models import BaseInformation
+    return BaseInformation.objects.filter(pk=obj_id).first()
+
+
+def standard_date(date: str):
+    date = date.split('-')
+    if len(date) != 3:
+        return None
+    import datetime
+    year = int(date[0])
+    month = int(date[1])
+    day = int(date[2])
+    date = datetime.date(year=year, month=month, day=day)
+    return date
+
+
+def standard_url(url: str):
+    return None
+
+
+def standard_file(file: str):
+    return None
+
+
+def standard_user(user_id: str):
+    from users.models import User
+    return User.objects.filter(pk=user_id).first()

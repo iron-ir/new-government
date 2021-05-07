@@ -1,3 +1,5 @@
+from .definitions import *
+
 YES_OR_NO_CHOICES = (
     (False, 'خیر'),
     (True, 'بله'),
@@ -215,17 +217,17 @@ def PRIVACY_RETURNER(value):
 
 
 VCODE_CHOICES = (
-    ('0', 'شماره تلفن'),
-    ('1', 'ایمیل'),
+    (PHONE_NUMBER, 'شماره تلفن'),
+    (EMAIL_ADDRESS, 'ایمیل'),
 )
 
-VCODE_DEFAULT = '0'
+VCODE_DEFAULT = PHONE_NUMBER
 
 
 def VCODE_RETURNER(value):
-    if value == '0':
+    if value == PHONE_NUMBER:
         return 'شماره تلفن'
-    if value == '1':
+    if value == EMAIL_ADDRESS:
         return 'ایمیل'
     return 'نامعلوم'
 
