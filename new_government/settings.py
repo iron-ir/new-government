@@ -49,6 +49,10 @@ INSTALLED_APPS = [
     'base_information_settings.apps.BaseInformationSettingsConfig',
     'elections.apps.ElectionsConfig',
     'polling.apps.PollingConfig',
+    'messaging.apps.MessagingConfig',
+    'ticketing.apps.TicketingConfig',
+    'notifying.apps.NotifyingConfig',
+    'talking.apps.TalkingConfig',
 
     'users.static',
 ]

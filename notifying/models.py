@@ -12,6 +12,7 @@ class Notify(models.Model):
     )
     title = models.CharField(
         verbose_name='عنوان',
+        max_length=64,
         null=True,
         blank=True,
     )

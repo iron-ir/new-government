@@ -2,11 +2,6 @@ from django.contrib import admin
 from .models import *
 
 
-@admin.register(Privacy)
-class PrivacyAdmin(admin.ModelAdmin):
-    pass
-
-
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     pass

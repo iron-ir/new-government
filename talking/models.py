@@ -7,10 +7,12 @@ class Talk(models.Model):
         to=User,
         on_delete=models.CASCADE,
         verbose_name='مالک',
+        related_name='t_u_owner',
     )
 
     employees = models.ManyToManyField(
         to=User,
+        related_name='t_u_employees',
     )
 
     is_active = models.BooleanField(

@@ -20,6 +20,7 @@ class Ticket(models.Model):
     )
     title = models.CharField(
         verbose_name='عنوان',
+        max_length=64,
         null=True,
         blank=True,
     )
@@ -94,6 +95,7 @@ class Answer(models.Model):
     )
     title = models.CharField(
         verbose_name='عنوان',
+        max_length=64,
         null=True,
         blank=True,
     )
