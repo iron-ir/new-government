@@ -7,321 +7,6 @@ from base_information_settings.models import BaseInformation, BaseInformationHea
 from repository.choices import VCODE_CHOICES, VCODE_RETURNER
 
 
-class Privacy(models.Model):
-    _email = models.CharField(
-        max_length=2,
-        verbose_name='ایمیل',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def email(self):
-        return PRIVACY_RETURNER(self._email)
-
-    @email.setter
-    def email(self, value):
-        self._email = value
-
-    _phone_number = models.CharField(
-        max_length=2,
-        verbose_name='شماره تلفن',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def phone_number(self):
-        return PRIVACY_RETURNER(self._phone_number)
-
-    @phone_number.setter
-    def phone_number(self, value):
-        self._phone_number = value
-
-    _avatar = models.CharField(
-        max_length=2,
-        verbose_name='عکس پروفایل',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def avatar(self):
-        return PRIVACY_RETURNER(self._avatar)
-
-    @avatar.setter
-    def avatar(self, value):
-        self._avatar = value
-
-    _first_name = models.CharField(
-        max_length=2,
-        verbose_name='نام',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def first_name(self):
-        return PRIVACY_RETURNER(self._first_name)
-
-    @first_name.setter
-    def first_name(self, value):
-        self._first_name = value
-
-    _last_name = models.CharField(
-        max_length=2,
-        verbose_name='نام خانوادگی',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def last_name(self):
-        return PRIVACY_RETURNER(self._last_name)
-
-    @last_name.setter
-    def last_name(self, value):
-        self._last_name = value
-
-    _gender = models.CharField(
-        max_length=2,
-        verbose_name='جنسیت',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def gender(self):
-        return PRIVACY_RETURNER(self._gender)
-
-    @gender.setter
-    def gender(self, value):
-        self._gender = value
-
-    _national_code = models.CharField(
-        max_length=2,
-        verbose_name='کدملی',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def national_code(self):
-        return PRIVACY_RETURNER(self._national_code)
-
-    @national_code.setter
-    def national_code(self, value):
-        self._national_code = value
-
-    _father_name = models.CharField(
-        max_length=2,
-        verbose_name='نام پدر',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def father_name(self):
-        return PRIVACY_RETURNER(self._father_name)
-
-    @father_name.setter
-    def father_name(self, value):
-        self._father_name = value
-
-    _mother_name = models.CharField(
-        max_length=2,
-        verbose_name='نام مادر',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def mother_name(self):
-        return PRIVACY_RETURNER(self._mother_name)
-
-    @mother_name.setter
-    def mother_name(self, value):
-        self._mother_name = value
-
-    _birth_date = models.CharField(
-        max_length=2,
-        verbose_name='تاریخ تولد',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def birth_date(self):
-        return PRIVACY_RETURNER(self._birth_date)
-
-    @birth_date.setter
-    def birth_date(self, value):
-        self._birth_date = value
-
-    _birth_place = models.CharField(
-        max_length=2,
-        verbose_name='محل تولد',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def birth_place(self):
-        return PRIVACY_RETURNER(self._birth_place)
-
-    @birth_place.setter
-    def birth_place(self, value):
-        self._birth_place = value
-
-    _nationality = models.CharField(
-        max_length=2,
-        verbose_name='ملیت',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def nationality(self):
-        return PRIVACY_RETURNER(self._nationality)
-
-    @nationality.setter
-    def nationality(self, value):
-        self._nationality = value
-
-    _religion = models.CharField(
-        max_length=2,
-        verbose_name='دین',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def religion(self):
-        return PRIVACY_RETURNER(self._religion)
-
-    @religion.setter
-    def religion(self, value):
-        self._religion = value
-
-    _official_website = models.CharField(
-        max_length=2,
-        verbose_name='وب سایت شخصی',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def official_website(self):
-        return PRIVACY_RETURNER(self._official_website)
-
-    @official_website.setter
-    def official_website(self, value):
-        self._official_website = value
-
-    _work_expiration = models.CharField(
-        max_length=2,
-        verbose_name='سوابق کاری',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def work_expiration(self):
-        return PRIVACY_RETURNER(self._work_expiration)
-
-    @work_expiration.setter
-    def work_expiration(self, value):
-        self._work_expiration = value
-
-    _education_history = models.CharField(
-        max_length=2,
-        verbose_name='سوابق کاری',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def education_history(self):
-        return PRIVACY_RETURNER(self._education_history)
-
-    @education_history.setter
-    def education_history(self, value):
-        self._education_history = value
-
-    _standpoint = models.CharField(
-        max_length=2,
-        verbose_name='سوابق کاری',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def standpoint(self):
-        return PRIVACY_RETURNER(self._standpoint)
-
-    @standpoint.setter
-    def standpoint(self, value):
-        self._standpoint = value
-
-    _effect = models.CharField(
-        max_length=2,
-        verbose_name='سوابق کاری',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def effect(self):
-        return PRIVACY_RETURNER(self._effect)
-
-    @effect.setter
-    def effect(self, value):
-        self._effect = value
-
-    _user_relation = models.CharField(
-        max_length=2,
-        verbose_name='سوابق کاری',
-        default=PRIVACY_DEFAULT,
-        choices=PRIVACY_CHOICES,
-    )
-
-    @property
-    def user_relation(self):
-        return PRIVACY_RETURNER(self._user_relation)
-
-    @user_relation.setter
-    def user_relation(self, value):
-        self._user_relation = value
-
-    def to_dict(self):
-        return {
-            'email': self.email,
-            'phone_number': self.phone_number,
-            'avatar': self.avatar,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'gender': self.gender,
-            'national_code': self.national_code,
-            'father_name': self.father_name,
-            'mother_name': self.mother_name,
-            'birth_date': self.birth_date,
-            'birth_place': self.birth_place,
-            'nationality': self.nationality,
-            'religion': self.religion,
-            'official_website': self.official_website,
-            'work_expiration': self.work_expiration,
-            'education_history': self.education_history,
-            'standpoint': self.standpoint,
-            'effect': self.effect,
-            'user_relation': self.user_relation,
-
-        }
-
-    class Meta:
-        verbose_name = 'تنظیمات حریم شخصی'
-        verbose_name_plural = 'تنظیمات حریم‌های شخصی'
-
-
 class Role(models.Model):
     title = models.ForeignKey(
         to=BaseInformation,
@@ -344,18 +29,13 @@ class Role(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.pk,
             'title': self.title,
+            'is_active': self.is_active,
         }
 
 
 class User(AbstractUser):
-    privacy = models.OneToOneField(
-        to=Privacy,
-        on_delete=models.CASCADE,
-        verbose_name='حریم شخصی',
-        null=True,
-        blank=True,
-    )
     _is_verify = models.BooleanField(
         verbose_name='تایید',
         default=False,
@@ -496,6 +176,7 @@ class User(AbstractUser):
 
     def to_dict(self):
         return {
+            'id': self.pk,
             'is_verify': self.is_verify,
             'is_email_verify': self.is_email_verify,
             'is_phone_number_verify': self.is_phone_number_verify,
@@ -636,26 +317,15 @@ class WorkExpiration(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.pk,
             'place_number_for_sorting': self.place_number_for_sorting,
             'is_verify': self.is_verify,
-            'user': self.user.to_dict(),
+            'user': self.user_id,
             'post_title': self.post_title,
-            'cooperation_type': self.cooperation_type.to_dict(),
+            'cooperation_type': self.cooperation_type_id,
             'from_date': self.from_date,
             'to_date': self.to_date,
-            'activity_type': self.activity_type.to_dict(),
-            'organization_name': self.organization_name,
-        }
-
-    def _to_dict_4_dev(self):
-        return {
-            'place_number_for_sorting': self.place_number_for_sorting,
-            'is_verify': self.is_verify,
-            'post_title': self.post_title,
-            'cooperation_type': self.cooperation_type.to_dict(),
-            'from_date': self.from_date,
-            'to_date': self.to_date,
-            'activity_type': self.activity_type.to_dict(),
+            'activity_type': self.activity_type_id,
             'organization_name': self.organization_name,
         }
 
@@ -737,30 +407,19 @@ class EducationHistory(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.pk,
             'place_number_for_sorting': self.place_number_for_sorting,
             'is_verify': self.is_verify,
-            'user': self.user.to_dict(),
-            'degree_type': self.degree_type.to_dict(),
-            'field_of_study': self.field_of_study.to_dict(),
-            'place_of_study_type': self.place_of_study_type.to_dict(),
+            'user': self.user_id,
+            'degree_type': self.degree_type_id,
+            'field_of_study': self.field_of_study_id,
+            'place_of_study_type': self.place_of_study_type_id,
             'place_of_study': self.place_of_study,
-            'zone': self.zone.to_dict(),
+            'zone': self.zone_id,
             'graduation_date': self.graduation_date,
             'is_study': self.is_study,
         }
 
-    def _to_dict_4_dev(self):
-        return {
-            'place_number_for_sorting': self.place_number_for_sorting,
-            'is_verify': self.is_verify,
-            'degree_type': self.degree_type.to_dict(),
-            'field_of_study': self.field_of_study.to_dict(),
-            'place_of_study_type': self.place_of_study_type.to_dict(),
-            'place_of_study': self.place_of_study,
-            'zone': self.zone.to_dict(),
-            'graduation_date': self.graduation_date,
-            'is_study': self.is_study,
-        }
 
 
 class Standpoint(models.Model):
@@ -821,25 +480,15 @@ class Standpoint(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.pk,
             'place_number_for_sorting': self.place_number_for_sorting,
-            'user': self.user.to_dict(),
+            'user': self.user_id,
             'title': self.title,
             'description': self.description,
             'is_active': self.is_active,
             'link': self.link,
             'attachment': self.attachment,
         }
-
-    def _to_dict_4_dev(self):
-        return {
-            'place_number_for_sorting': self.place_number_for_sorting,
-            'title': self.title,
-            'description': self.description,
-            'is_active': self.is_active,
-            'link': self.link,
-            'attachment': self.attachment,
-        }
-
 
 class Effect(models.Model):
     etype = models.ForeignKey(
@@ -899,19 +548,10 @@ class Effect(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.pk,
             'place_number_for_sorting': self.place_number_for_sorting,
             'is_active': self.is_active,
-            'user': self.user.to_dict(),
-            'title': self.title,
-            'description': self.description,
-            'link': self.link,
-            'attachment': self.attachment,
-        }
-
-    def _to_dict_4_dev(self):
-        return {
-            'place_number_for_sorting': self.place_number_for_sorting,
-            'is_active': self.is_active,
+            'user': self.user_id,
             'title': self.title,
             'description': self.description,
             'link': self.link,
@@ -984,21 +624,13 @@ class UserRelation(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.pk,
             'is_verify': self.is_verify,
-            'base_user': self.base_user.to_dict(),
+            'base_user': self.base_user_id,
             'base_user_verification': self.base_user_verification,
-            'related_user': self.related_user.to_dict(),
+            'related_user': self.related_user_id,
             'related_user_verification': self.related_user_verification,
-            'type': self.rtype.to_dict(),
-            'form_date': self.form_date,
-            'to_date': self.to_date,
-        }
-
-    def _to_dict_4_dev(self):
-        return {
-            'is_verify': self.is_verify,
-            'related_user': self.related_user.to_dict(),
-            'type': self.rtype.to_dict(),
+            'type': self.rtype_id,
             'form_date': self.form_date,
             'to_date': self.to_date,
         }
@@ -1064,9 +696,6 @@ class VCode(models.Model):
         verbose_name_plural = 'کدهای تایید'
 
 
-
-
-
 def create_vcode(user: User = None, vtype: str = None):
     if user is None or vtype is None:
         return None
@@ -1120,35 +749,35 @@ def all_user_information(user: User) -> dict:
     i = 0
     for w_e in work_expirations:
         i += 1
-        work_expirations_to_dict[i] = w_e._to_dict_4_dev()
+        work_expirations_to_dict[i] = w_e.to_dict()
 
     education_histories = EducationHistory.objects.filter(user=user).all()
     education_histories_to_dict = {}
     i = 0
     for e_h in education_histories:
         i += 1
-        education_histories_to_dict[i] = e_h._to_dict_4_dev()
+        education_histories_to_dict[i] = e_h.to_dict()
 
     standpoints = Standpoint.objects.filter(user=user).all()
     standpoints_to_dict = {}
     i = 0
     for s in standpoints:
         i += 1
-        standpoints_to_dict[i] = s._to_dict_4_dev()
+        standpoints_to_dict[i] = s.to_dict()
 
     effects = Effect.objects.filter(user=user).all()
     effects_to_dict = {}
     i = 0
     for e in effects:
         i += 1
-        effects_to_dict[i] = e._to_dict_4_dev()
+        effects_to_dict[i] = e.to_dict()
 
     user_relations = UserRelation.objects.filter(base_user=user).filter(_is_verify=True).all()
     user_relations_to_dict = {}
     i = 0
     for u_r in user_relations:
         i += 1
-        user_relations_to_dict[i] = u_r._to_dict_4_dev()
+        user_relations_to_dict[i] = u_r.to_dict()
 
     return {
         'user': user.to_dict(),

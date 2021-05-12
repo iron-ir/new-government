@@ -28,6 +28,7 @@ class BaseInformationHeader(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.pk,
             'is_active': self.is_active,
             'title': self.title,
             'code': self.code,
@@ -73,10 +74,11 @@ class BaseInformation(models.Model):
 
     def to_dict(self):
         return {
-            'header': self.header.to_dict(),
+            'id': self.pk,
+            'header': self.header_id,
             'title': self.title,
             'code': self.code,
-            'parent': self.parent.to_dict(),
+            'parent': self.parent_id,
         }
 
 
@@ -117,6 +119,7 @@ class Zone(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.pk,
             'title': self.title,
             'code': self.code,
             'type': self.ztype,

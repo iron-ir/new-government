@@ -51,7 +51,8 @@ class Election(models.Model):
 
     def to_dict(self):
         return {
-            'type': self.etype.to_dict(),
+            'id': self.pk,
+            'type': self.etype_id,
             'form_year': self.form_year,
             'to_year': self.to_year,
             'period': self.period,
@@ -110,9 +111,10 @@ class RegisterCandidatePerElection(models.Model):
 
     def to_dict(self):
         return {
-            'user': self.candidate.to_dict(),
-            'elections': self.election.to_dict(),
-            'candidate_group': self.candidate_group.to_dict(),
+            'id': self.pk,
+            'user': self.candidate_id,
+            'elections': self.election_id,
+            'candidate_group': self.candidate_group_id,
             'date_time': self.date_time,
             'slogan': self.slogan,
             'candidate_title': self.candidate_title,
@@ -145,7 +147,8 @@ class Candidate(models.Model):
 
     def to_dict(self):
         return {
-            'user': self.user.to_dict(),
+            'id': self.pk,
+            'user': self.user_id,
             'is_suspension': self.is_suspension,
         }
 
@@ -171,5 +174,6 @@ class CandidateGroup(models.Model):
 
     def to_dict(self):
         return {
+            'id': self.pk,
             'title': self.title,
         }
