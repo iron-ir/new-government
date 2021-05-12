@@ -322,6 +322,32 @@ class Privacy(models.Model):
         verbose_name_plural = 'تنظیمات حریم‌های شخصی'
 
 
+class Role(models.Model):
+    title = models.ForeignKey(
+        to=BaseInformation,
+        on_delete=models.CASCADE,
+        verbose_name='عنوان',
+        blank=False,
+        null=False,
+    )
+    is_active = models.BooleanField(
+        verbose_name='فعال',
+        default=False,
+    )
+
+    class Meta:
+        verbose_name = 'نقش'
+        verbose_name_plural = 'نقش ها'
+
+    def __str__(self):
+        return f'{self.title}'
+
+    def to_dict(self):
+        return {
+            'title': self.title,
+        }
+
+
 class User(AbstractUser):
     privacy = models.OneToOneField(
         to=Privacy,
@@ -503,6 +529,42 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'کاربر'
         verbose_name_plural = 'کاربران'
+
+
+class UserRole(models.Model):
+    from_date_time = models.DateTimeField(
+        verbose_name='از',
+        blank=False,
+        null=False,
+    )
+    to_date_time = models.DateTimeField(
+        verbose_name='تا',
+        blank=False,
+        null=False,
+    )
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        verbose_name='کاربر',
+    )
+
+    role = models.ForeignKey(
+        on_delete=models.CASCADE,
+        to=Role,
+        blank=False,
+        null=False,
+        verbose_name='نقش',
+    )
+
+    class Meta:
+        verbose_name = 'نقش کاربر'
+        verbose_name_plural = 'نقش های کاربران'
+        unique_together = ('user', 'role',)
+
+    def __str__(self):
+        return f'{self.user}: {self.role}'
 
 
 class WorkExpiration(models.Model):
@@ -1000,6 +1062,9 @@ class VCode(models.Model):
     class Meta:
         verbose_name = 'کد تایید'
         verbose_name_plural = 'کدهای تایید'
+
+
+
 
 
 def create_vcode(user: User = None, vtype: str = None):
