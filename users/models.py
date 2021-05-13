@@ -3,36 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from repository.uploader import image_upload_to, file_upload_to
 from repository.regular_expression import UnicodeNationalcodeValidator, UnicodePhoneNumberValidator
 from repository.choices import *
-from base_information_settings.models import BaseInformation, BaseInformationHeader, Zone
+from base_information_settings.models import BaseInformation, BaseInformationHeader, Zone, Role
 from repository.choices import VCODE_CHOICES, VCODE_RETURNER
-
-
-class Role(models.Model):
-    title = models.ForeignKey(
-        to=BaseInformation,
-        on_delete=models.CASCADE,
-        verbose_name='عنوان',
-        blank=False,
-        null=False,
-    )
-    is_active = models.BooleanField(
-        verbose_name='فعال',
-        default=False,
-    )
-
-    class Meta:
-        verbose_name = 'نقش'
-        verbose_name_plural = 'نقش ها'
-
-    def __str__(self):
-        return f'{self.title}'
-
-    def to_dict(self):
-        return {
-            'id': self.pk,
-            'title': self.title,
-            'is_active': self.is_active,
-        }
 
 
 class User(AbstractUser):
@@ -247,6 +219,14 @@ class UserRole(models.Model):
     def __str__(self):
         return f'{self.user}: {self.role}'
 
+    def to_dict(self):
+        return {
+            'from_date_time': self.from_date_time,
+            'to_date_time': self.to_date_time,
+            'role_id': self.role_id,
+            'user_id': self.user_id,
+        }
+
 
 class WorkExpiration(models.Model):
     place_number_for_sorting = models.IntegerField(
@@ -421,7 +401,6 @@ class EducationHistory(models.Model):
         }
 
 
-
 class Standpoint(models.Model):
     group = models.ForeignKey(
         verbose_name='دسته بندی',
@@ -489,6 +468,7 @@ class Standpoint(models.Model):
             'link': self.link,
             'attachment': self.attachment,
         }
+
 
 class Effect(models.Model):
     etype = models.ForeignKey(
