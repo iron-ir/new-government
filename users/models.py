@@ -223,8 +223,8 @@ class UserRole(models.Model):
         return {
             'from_date_time': self.from_date_time,
             'to_date_time': self.to_date_time,
-            'role_id': self.role_id,
             'user_id': self.user_id,
+            'role_id': self.role_id,
         }
 
 
@@ -300,12 +300,12 @@ class WorkExpiration(models.Model):
             'id': self.pk,
             'place_number_for_sorting': self.place_number_for_sorting,
             'is_verify': self.is_verify,
-            'user': self.user_id,
+            'user_id': self.user_id,
             'post_title': self.post_title,
-            'cooperation_type': self.cooperation_type_id,
+            'cooperation_type_id': self.cooperation_type_id,
             'from_date': self.from_date,
             'to_date': self.to_date,
-            'activity_type': self.activity_type_id,
+            'activity_type_id': self.activity_type_id,
             'organization_name': self.organization_name,
         }
 
@@ -390,12 +390,12 @@ class EducationHistory(models.Model):
             'id': self.pk,
             'place_number_for_sorting': self.place_number_for_sorting,
             'is_verify': self.is_verify,
-            'user': self.user_id,
-            'degree_type': self.degree_type_id,
-            'field_of_study': self.field_of_study_id,
-            'place_of_study_type': self.place_of_study_type_id,
+            'user_id': self.user_id,
+            'degree_type_id': self.degree_type_id,
+            'field_of_study_id': self.field_of_study_id,
+            'place_of_study_type_id': self.place_of_study_type_id,
             'place_of_study': self.place_of_study,
-            'zone': self.zone_id,
+            'zone_id': self.zone_id,
             'graduation_date': self.graduation_date,
             'is_study': self.is_study,
         }
@@ -461,12 +461,12 @@ class Standpoint(models.Model):
         return {
             'id': self.pk,
             'place_number_for_sorting': self.place_number_for_sorting,
-            'user': self.user_id,
+            'user_id': self.user_id,
             'title': self.title,
             'description': self.description,
             'is_active': self.is_active,
-            'link': self.link,
-            'attachment': self.attachment,
+            'link': str(self.link),
+            'attachment': str(self.attachment),
         }
 
 
@@ -529,13 +529,14 @@ class Effect(models.Model):
     def to_dict(self):
         return {
             'id': self.pk,
+            'type_id': self.etype_id,
             'place_number_for_sorting': self.place_number_for_sorting,
             'is_active': self.is_active,
-            'user': self.user_id,
+            'user_id': self.user_id,
             'title': self.title,
             'description': self.description,
-            'link': self.link,
-            'attachment': self.attachment,
+            'link': str(self.link),
+            'attachment': str(self.attachment),
         }
 
 
@@ -606,11 +607,11 @@ class UserRelation(models.Model):
         return {
             'id': self.pk,
             'is_verify': self.is_verify,
-            'base_user': self.base_user_id,
+            'base_user_id': self.base_user_id,
             'base_user_verification': self.base_user_verification,
-            'related_user': self.related_user_id,
+            'related_user_id': self.related_user_id,
             'related_user_verification': self.related_user_verification,
-            'type': self.rtype_id,
+            'type_id': self.rtype_id,
             'form_date': self.form_date,
             'to_date': self.to_date,
         }
