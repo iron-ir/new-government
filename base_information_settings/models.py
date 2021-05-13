@@ -125,3 +125,31 @@ class Zone(models.Model):
             'type': self.ztype,
             'parent': self.parent,
         }
+
+
+class Role(models.Model):
+    title = models.ForeignKey(
+        to=BaseInformation,
+        on_delete=models.CASCADE,
+        verbose_name='عنوان',
+        blank=False,
+        null=False,
+    )
+    is_active = models.BooleanField(
+        verbose_name='فعال',
+        default=False,
+    )
+
+    class Meta:
+        verbose_name = 'نقش'
+        verbose_name_plural = 'نقش ها'
+
+    def __str__(self):
+        return f'{self.title}'
+
+    def to_dict(self):
+        return {
+            'id': self.pk,
+            'title': self.title,
+            'is_active': self.is_active,
+        }
