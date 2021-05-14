@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 
 INTERNAL_IPS = [
     '127.0.0.1',
+    'api.ref.mortza.ir',
 ]
 
 # Application definition
@@ -50,7 +51,7 @@ INSTALLED_APPS = [
     'elections.apps.ElectionsConfig',
     'polling.apps.PollingConfig',
 
-    'users.static',
+    # 'users.static',
 ]
 
 MIDDLEWARE = [
