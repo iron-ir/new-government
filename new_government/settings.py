@@ -26,11 +26,12 @@ SECRET_KEY = 'django-insecure-dt&21x4ywk49%)p&rq@^y+@@w95&vox8(%!8p0r51%0k!1ye*t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'api.ref.mortza.ir',
+]
 
 INTERNAL_IPS = [
     '127.0.0.1',
-    'api.ref.mortza.ir',
 ]
 
 # Application definition
@@ -146,7 +147,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 LOGIN_URL = '/login'
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/admin/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
