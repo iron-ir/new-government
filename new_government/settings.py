@@ -160,50 +160,50 @@ AUTH_USER_MODEL = 'users.User'
 
 LAST_ELECTION_PERIOD = '1400:03:28'
 
-ADMIN_ORDERING = [
-    (
-        'users', [
-            'User',
-            'EducationHistory',
-            'WorkExpiration',
-            'Effect',
-            'Standpoint',
-            'UserRelation',
-            'Privacy',
-            'VCode',
-        ],
-    ),
-    (
-        'elections', [
-            'Election',
-            'RegisterCandidatePerElection',
-            'Candidate',
-            'CandidateGroup',
-        ],
-    ),
-    (
-        'auth', [
-            'Group',
-        ],
-    ),
-    (
-        'base_information_settings',
-        [
-            'BaseInformationHeader',
-            'BaseInformation',
-            'Zone',
-        ],
-    ),
-]
-
-
-# Creating a sort function
-def get_app_list(self, request):
-    app_dict = self._build_app_dict(request)
-    for app_name, object_list in ADMIN_ORDERING:
-        app = app_dict[app_name]
-        app['models'].sort(key=lambda x: object_list.index(x['object_name']))
-        yield app
-
-
-admin.AdminSite.get_app_list = get_app_list
+# ADMIN_ORDERING = [
+#     (
+#         'users', [
+#             'User',
+#             'EducationHistory',
+#             'WorkExpiration',
+#             'Effect',
+#             'Standpoint',
+#             'UserRelation',
+#             'Privacy',
+#             'VCode',
+#         ],
+#     ),
+#     (
+#         'elections', [
+#             'Election',
+#             'RegisterCandidatePerElection',
+#             'Candidate',
+#             'CandidateGroup',
+#         ],
+#     ),
+#     (
+#         'auth', [
+#             'Group',
+#         ],
+#     ),
+#     (
+#         'base_information_settings',
+#         [
+#             'BaseInformationHeader',
+#             'BaseInformation',
+#             'Zone',
+#         ],
+#     ),
+# ]
+#
+#
+# # Creating a sort function
+# def get_app_list(self, request):
+#     app_dict = self._build_app_dict(request)
+#     for app_name, object_list in ADMIN_ORDERING:
+#         app = app_dict[app_name]
+#         app['models'].sort(key=lambda x: object_list.index(x['object_name']))
+#         yield app
+#
+#
+# admin.AdminSite.get_app_list = get_app_list
