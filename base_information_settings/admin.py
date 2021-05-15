@@ -16,3 +16,7 @@ class BaseInformationAdmin(admin.ModelAdmin):
 class ZoneAdmin(admin.ModelAdmin):
     pass
 
+
+@admin.register(Role)
+class RoleAdmin(admin.ModelAdmin):
+    pass
