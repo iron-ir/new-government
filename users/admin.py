@@ -7,6 +7,10 @@ class UserAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(UserRole)
+class UserRoleAdmin(admin.ModelAdmin):
+    pass
+
 @admin.register(WorkExpiration)
 class WorkExpirationAdmin(admin.ModelAdmin):
     pass
