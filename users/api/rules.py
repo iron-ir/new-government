@@ -106,3 +106,30 @@ def login_rules_output() -> list:
 LOGIN_RULES = Rules()
 LOGIN_RULES.INPUT = login_rules_input()
 LOGIN_RULES.OUTPUT = login_rules_output()
+
+
+def get_users_rules_input() -> list:
+    return [
+        {
+            'user_role': {
+                'role_id': {},
+            },
+        },
+        {
+            'user_role': {
+                'role_id': {},
+            },
+            'register_candidate_per_election': {
+                'place_id': {},
+            }
+        }
+    ]
+
+
+def get_users_rules_output() -> list:
+    return []
+
+
+GET_USERS_RULES = Rules()
+GET_USERS_RULES.INPUT = get_users_rules_input()
+GET_USERS_RULES.OUTPUT = get_users_rules_output()
