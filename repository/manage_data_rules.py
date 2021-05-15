@@ -14,7 +14,6 @@ from repository.regular_expression import (
     text_teg,
 )
 
-
 OBJECTS_LIST = {
     'user': {
         'id': {
@@ -160,6 +159,82 @@ OBJECTS_LIST = {
             'max_length': None,
             'min_length': None,
 
+        },
+    },
+    'register_candidate_per_election': {
+        'id': {
+            'null_able': False,
+            'validator': string_reg,
+            'max_length': None,
+            'min_length': None,
+        },
+        'candidate_id': {
+            'null_able': False,
+            'validator': string_reg,
+            'max_length': None,
+            'min_length': None,
+        },
+        'elections_id': {
+            'null_able': False,
+            'validator': string_reg,
+            'max_length': None,
+            'min_length': None,
+        },
+        'candidate_group_id': {
+            'null_able': False,
+            'validator': string_reg,
+            'max_length': None,
+            'min_length': None,
+        },
+        'date_time': {
+            'null_able': False,
+            'validator': date_time_reg,
+            'max_length': None,
+            'min_length': None,
+        },
+        'slogan': {
+            'null_able': False,
+            'validator': string_reg,
+            'max_length': None,
+            'min_length': None,
+        },
+        'candidate_title': {
+            'null_able': False,
+            'validator': string_reg,
+            'max_length': None,
+            'min_length': None,
+        },
+        'place_id': {
+            'null_able': False,
+            'validator': None,
+            'max_length': None,
+            'min_length': None,
+        },
+    },
+    'user_role': {
+        'from_date_time': {
+            'null_able': False,
+            'validator': date_time_reg,
+            'max_length': None,
+            'min_length': None,
+        },
+        'to_date_time': {
+            'null_able': False,
+            'validator': date_time_reg,
+            'max_length': None,
+            'min_length': None,
+        },
+        'user_id': {
+            'null_able': False,
+            'validator': string_reg,
+            'max_length': None,
+            'min_length': None,
+        },
+        'role_id': {
+            'null_able': False,
+            'validator': string_reg,
+            'max_length': None,
+            'min_length': None,
         },
     },
 }
