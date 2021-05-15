@@ -1,8 +1,8 @@
 import logging
 from django.urls import reverse
 from django.contrib.auth import authenticate
-from django.shortcuts import render, redirect
 from django.contrib.auth import login as dj_login
+from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponseForbidden, HttpResponseNotFound
@@ -24,9 +24,15 @@ from django.db.models import Q
 from users.models import create_vcode, vcode_is_acceptable
 from users.models import all_user_information, WorkExpiration, EducationHistory, Standpoint, Effect, UserRelation
 
+from .serializers import user_list_serializer
+
+from repository.functions import input_output_management
+from .rules import LOGIN_RULES
+from .routes_operations import login
+
 
 @require_POST
-def signup(request: HttpRequest):
+def signup_route(request: HttpRequest):
     if 'username' not in request.POST and \
             'phone_number' not in request.POST and \
             'email' not in request.POST:
@@ -109,53 +115,89 @@ def signup(request: HttpRequest):
     )
 
 
+# @require_POST
+# def login_route(request: HttpRequest):
+#     if not request.user.is_anonymous:
+#         return false_response(
+#             message=MESSAGE_4_YOU_HAVE_BEEN_LOGGED_IN_BEFORE,
+#         )
+#     if 'username' not in request.POST:
+#         return false_response(
+#             message=MESSAGE_4_USERNAME_FIELD_IS_EMPTY,
+#         )
+#     if 'password' not in request.POST:
+#         return false_response(
+#             message='فبلد مربوط به کلمه عبور خالی می باشد.',
+#         )
+#     usr = authenticate(
+#         username=request.POST['username'],
+#         password=request.POST['password']
+#     )
+#     if usr is None:
+#         usr = User.objects.filter(email=request.POST['username']).first()
+#         if usr is not None:
+#             usr = authenticate(
+#                 username=usr.username,
+#                 password=request.POST['password']
+#             )
+#         if usr is None:
+#             usr = User.objects.filter(phone_number=request.POST['username']).first()
+#             if usr is not None:
+#                 usr = authenticate(
+#                     username=usr.username,
+#                     password=request.POST['password']
+#                 )
+#             if usr is None:
+#                 return false_response(
+#                     message=MESSAGE_4_THERE_IS_NO_USER_WITH_THIS_PROFILE,
+#                 )
+#     dj_login(request, usr)
+#     return true_response(
+#         message=MESSAGE_4_USER_LOGIN_SUCCESSFUL,
+#         data={
+#             'user': usr.to_dict(),
+#         }
+#     )
+
+
 @require_POST
-def login(request: HttpRequest):
+@input_output_management(LOGIN_RULES)
+def login_route(request: HttpRequest, data: dict, *args, **kwargs):
     if not request.user.is_anonymous:
-        return false_response(
-            message=MESSAGE_4_YOU_HAVE_BEEN_LOGGED_IN_BEFORE,
-        )
-    if 'username' not in request.POST:
-        return false_response(
-            message=MESSAGE_4_USERNAME_FIELD_IS_EMPTY,
-        )
-    if 'password' not in request.POST:
-        return false_response(
-            message='فبلد مربوط به کلمه عبور خالی می باشد.',
-        )
-    usr = authenticate(
-        username=request.POST['username'],
-        password=request.POST['password']
-    )
-    if usr is None:
-        usr = User.objects.filter(email=request.POST['username']).first()
-        if usr is not None:
-            usr = authenticate(
-                username=usr.username,
-                password=request.POST['password']
-            )
+        raise Exception(MESSAGE_4_YOU_HAVE_BEEN_LOGGED_IN_BEFORE)
+
+    username = None
+    if 'username' in data['user']:
+        usr = User.objects.filter(username=data['user']['username']).first()
         if usr is None:
-            usr = User.objects.filter(phone_number=request.POST['username']).first()
-            if usr is not None:
-                usr = authenticate(
-                    username=usr.username,
-                    password=request.POST['password']
-                )
-            if usr is None:
-                return false_response(
-                    message=MESSAGE_4_THERE_IS_NO_USER_WITH_THIS_PROFILE,
-                )
-    dj_login(request, usr)
-    return true_response(
-        message=MESSAGE_4_USER_LOGIN_SUCCESSFUL,
-        data={
-            'user': usr.to_dict(),
-        }
-    )
+            raise Exception(MESSAGE_4_AUTHENTICATE_FAIL)
+        username = usr.username
+
+    elif 'phone_number' in data['user']:
+        usr = User.objects.filter(phone_number=data['user']['phone_number']).first()
+        if usr is None:
+            raise Exception(MESSAGE_4_AUTHENTICATE_FAIL)
+        username = usr.username
+
+    elif 'email' in data['user']:
+        usr = User.objects.filter(email=data['user']['email']).first()
+        if usr is None:
+            raise Exception(MESSAGE_4_AUTHENTICATE_FAIL)
+        username = usr.username
+
+    elif 'national_code' in data['user']:
+        usr = User.objects.filter(national_code=data['user']['national_code']).first()
+        if usr is None:
+            raise Exception(MESSAGE_4_AUTHENTICATE_FAIL)
+        username = usr.username
+
+    password = data['user']['password']
+
+    return login(username, password, request, *args, **kwargs)
 
 
 @require_GET
-def logout(request: HttpRequest):
+def logout_route(request: HttpRequest):
     from django.contrib.auth import logout
     logout(request)
     return true_response(
@@ -165,7 +207,7 @@ def logout(request: HttpRequest):
 
 @require_POST
 @login_required
-def update(request: HttpRequest):
+def update_route(request: HttpRequest):
     usr = request.user
     if 'username' in request.POST:
         if len(request.POST['username']) != 0:
@@ -304,7 +346,7 @@ def update(request: HttpRequest):
 
 @require_GET
 @login_required
-def sms_vcode(request: HttpRequest):
+def sms_vcode_route(request: HttpRequest):
     if request.user.phone_number is None:
         return false_response(
             message=MESSAGE_4_PHONE_NUMBER_NOT_EXIST,
@@ -324,7 +366,7 @@ def sms_vcode(request: HttpRequest):
 
 @require_GET
 @login_required
-def email_vcode(request: HttpRequest):
+def email_vcode_route(request: HttpRequest):
     if request.user.email is None:
         return false_response(
             message=MESSAGE_4_EMAIL_NOT_EXIST,
@@ -344,7 +386,7 @@ def email_vcode(request: HttpRequest):
 
 @require_POST
 @login_required
-def confirm_phone_number(request: HttpRequest):
+def confirm_phone_number_route(request: HttpRequest):
     if 'code' not in request.POST:
         return false_response(
             message=MESSAGE_4_VCODE_PHONE_NUMBER_FIELD_IS_EMPTY,
@@ -371,7 +413,7 @@ def confirm_phone_number(request: HttpRequest):
 
 @require_POST
 @login_required
-def confirm_email_address(request: HttpRequest):
+def confirm_email_address_route(request: HttpRequest):
     if 'code' not in request.POST:
         return false_response(
             message=MESSAGE_4_VCODE_EMAIL_FIELD_IS_EMPTY,
@@ -398,7 +440,7 @@ def confirm_email_address(request: HttpRequest):
 
 @require_GET
 @login_required
-def get_all_user_information(request: HttpRequest):
+def get_all_user_information_route(request: HttpRequest):
     return true_response(
         data=all_user_information(user=request.user),
     )
@@ -406,7 +448,7 @@ def get_all_user_information(request: HttpRequest):
 
 @require_POST
 @login_required
-def add_work_expiration(request: HttpRequest):
+def add_work_expiration_route(request: HttpRequest):
     place_number_for_sorting = None
     if 'place_number_for_sorting' in request.POST:
         if len(request.POST['place_number_for_sorting']) != 0:
@@ -459,7 +501,7 @@ def add_work_expiration(request: HttpRequest):
 
 @require_POST
 @login_required
-def add_education_history(request: HttpRequest):
+def add_education_history_route(request: HttpRequest):
     place_number_for_sorting = None
     if 'place_number_for_sorting' in request.POST:
         if len(request.POST['place_number_for_sorting']) != 0:
@@ -554,7 +596,7 @@ def add_education_history(request: HttpRequest):
 
 @require_POST
 @login_required
-def add_standpoint(request: HttpRequest):
+def add_standpoint_route(request: HttpRequest):
     place_number_for_sorting = None
     if 'place_number_for_sorting' in request.POST:
         if len(request.POST['place_number_for_sorting']) != 0:
@@ -613,7 +655,7 @@ def add_standpoint(request: HttpRequest):
 
 @require_POST
 @login_required
-def add_effect(request: HttpRequest):
+def add_effect_route(request: HttpRequest):
     place_number_for_sorting = None
     if 'place_number_for_sorting' in request.POST:
         if len(request.POST['place_number_for_sorting']) != 0:
@@ -671,7 +713,7 @@ def add_effect(request: HttpRequest):
 
 @require_POST
 @login_required
-def add_user_relation(request: HttpRequest):
+def add_user_relation_route(request: HttpRequest):
     if 'related_user_id' not in request.POST:
         return false_response(
             message=MESSAGE_4_RELATED_USER_FIELD_IS_EMPTY,
@@ -734,9 +776,51 @@ def add_user_relation(request: HttpRequest):
         message=MESSAGE_4_USER_RELATION_REGISTERD,
     )
 
+
+@require_POST
+def get_users_route(request: HttpRequest):
+    role = None
+    if 'role' in request.POST:
+        if len(request.POST) != 0:
+            role = id_to_role(request.POST['role'])
+            if role is None:
+                return false_response(
+                    message=MESSAGE_4_ROLE_IS_NOT_DEFINE,
+                )
+        else:
+            return false_response(
+                message=MESSAGE_4_ROLE_FIELD_EMPTY,
+            )
+    else:
+        return false_response(
+            message=MESSAGE_4_ROLE_FIELD_EMPTY
+        )
+
+    fields = None
+
+    if 'fields' in request.POST:
+        if len(request.POST) != 0:
+            role = id_to_role(request.POST['fields'])
+            if role is None:
+                return false_response(
+                    message=MESSAGE_4_ROLE_IS_NOT_DEFINE,
+                )
+        else:
+            return false_response(
+                message=MESSAGE_4_ROLE_FIELD_EMPTY,
+            )
+    else:
+        return false_response(
+            message=MESSAGE_4_ROLE_FIELD_EMPTY
+        )
+
+    return true_response(
+        data=user_list_serializer(page)
+    )
+
 # @require_POST
 # @login_required
-# def verification_of_information(request: HttpRequest):
+# def verification_of_information_route(request: HttpRequest):
 #     usr = request.user
 #     if usr.is_candidate:
 #         if usr.is_suspension:

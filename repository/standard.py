@@ -118,3 +118,13 @@ def standard_bool(b: str):
 def standard_user(user_id: str):
     from users.models import User
     return User.objects.filter(pk=user_id).first()
+
+
+def id_to_role(role_id: str):
+    from base_information_settings.models import Role
+    return Role.objects.filter(pk=role_id).first()
+
+
+def str_to_list(fields: str):
+    from base_information_settings.models import Role
+    return Role.objects.filter(pk=role_id).first()
