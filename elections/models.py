@@ -52,7 +52,7 @@ class Election(models.Model):
     def to_dict(self):
         return {
             'id': self.pk,
-            'type': self.etype_id,
+            'type_id': self.etype_id,
             'form_year': self.form_year,
             'to_year': self.to_year,
             'period': self.period,
@@ -101,6 +101,14 @@ class RegisterCandidatePerElection(models.Model):
         null=True,
         blank=True,
     )
+    place = models.ForeignKey(
+        to=Zone,
+        on_delete=models.CASCADE,
+        verbose_name='مکان',
+        help_text='مکام شرکت در انتخابات',
+        null=False,
+        blank=False,
+    )
 
     class Meta:
         verbose_name = 'نماینده شرکت کننده در انتخابات'
@@ -112,12 +120,13 @@ class RegisterCandidatePerElection(models.Model):
     def to_dict(self):
         return {
             'id': self.pk,
-            'user': self.candidate_id,
-            'elections': self.election_id,
-            'candidate_group': self.candidate_group_id,
+            'candidate_id': self.candidate_id,
+            'elections_id': self.election_id,
+            'candidate_group_id': self.candidate_group_id,
             'date_time': self.date_time,
             'slogan': self.slogan,
             'candidate_title': self.candidate_title,
+            'place_id': self.place_id,
         }
 
 

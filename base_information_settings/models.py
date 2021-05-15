@@ -65,7 +65,7 @@ class BaseInformation(models.Model):
     )
 
     def __str__(self):
-        return f'{self.code}: {self.title}' if self.code is not None else f'{self.title}'
+        return f'{self.code}:{self.header.title}-{self.title}' if self.code is not None else f'{self.header.title}-{self.title}'
 
     class Meta:
         verbose_name = 'اطلاعات پایه'
