@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'api.ref.mortza.ir',
+    '127.0.0.1',
 ]
 
 INTERNAL_IPS = [
